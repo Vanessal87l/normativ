@@ -1,0 +1,21 @@
+.glav_head_h1{
+    background-color: black;
+    width: 1500px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+.glav_head_infa,.p{
+    margin-left: 300px;
+    color: white;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+
+}
+a{
+
+    color:white;
+
+}
