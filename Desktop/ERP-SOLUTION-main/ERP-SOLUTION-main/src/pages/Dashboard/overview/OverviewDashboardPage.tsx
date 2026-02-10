@@ -124,31 +124,31 @@ export default function OverviewDashboardPage() {
 
   const money = (n: number) => `${n.toLocaleString("uz-UZ")} so‘m`;
 
-  const headerCard = "rounded-2xl bg-white border border-slate-200 shadow-sm";
+  const headerCard = "rounded-2xl glass border border-slate-200 ";
 
   return (
     <DashboardShell>
-      <div className="text-2xl font-extrabold text-slate-900">Xush kelibsiz, {userName}!</div>
+      <div className="text-2xl font-extrabold text-white">Xush kelibsiz, {userName}!</div>
 
-      <div className="mt-4">
+      <div className="mt-4 ">
         <FilterBar onApply={(p) => setFilters(p)} />
       </div>
 
       {ui === "loading" && (
-        <div className="mt-4 rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
+        <div className="mt-4  glass p-6 text-white">
           Yuklanmoqda...
         </div>
       )}
 
       {ui === "error" && (
-        <div className="mt-4 rounded-2xl bg-white border border-slate-200 p-6 shadow-sm">
-          <div className="text-lg font-extrabold text-slate-900">Xatolik</div>
-          <div className="mt-2 text-sm text-slate-500">Demo API xatolik bo‘lishi mumkin.</div>
+        <div className="mt-4 rounded-2xl glass border border-slate-200 p-6 glass">
+          <div className="text-lg font-extrabold text-white">Xatolik</div>
+          <div className="mt-2 text-sm text-white">Demo API xatolik bo‘lishi mumkin.</div>
         </div>
       )}
 
       {ui === "content" && summary && (
-        <div className="mt-4 grid gap-4">
+        <div className="mt-4 grid gap-4  text-white">
           {/* ✅ KPI row (Sales) */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             {summary.salesKpis.map((k) => (
@@ -169,8 +169,8 @@ export default function OverviewDashboardPage() {
             <div className={cx(headerCard, "p-4")}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-sm font-extrabold text-slate-900">Sotuv trendi</div>
-                  <div className="mt-1 text-xs text-slate-500">Foizlar va dinamikani ko‘rsatadi (demo)</div>
+                  <div className="text-md font-semibold text-white">Sotuv trendi</div>
+                  <div className="mt-1 text-xs text-white">Foizlar va dinamikani ko‘rsatadi (demo)</div>
                 </div>
                 <RangeTabs value={rangeSales} onChange={setRangeSales} />
               </div>
@@ -183,8 +183,8 @@ export default function OverviewDashboardPage() {
             <div className={cx(headerCard, "p-4")}>
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <div className="text-sm font-extrabold text-slate-900">Ombor harakatlari</div>
-                  <div className="mt-1 text-xs text-slate-500">Kirim/chiqim dinamikasi (demo)</div>
+                  <div className="text-md font-semibold text-white">Ombor harakatlari</div>
+                  <div className="mt-1 text-xs text-white">Kirim/chiqim dinamikasi (demo)</div>
                 </div>
                 <RangeTabs value={rangeSklad} onChange={setRangeSklad} />
               </div>
@@ -195,25 +195,25 @@ export default function OverviewDashboardPage() {
           </div>
 
           {/* ✅ Recent table */}
-          <div className={cx(headerCard, "p-4")}>
+          <div className={cx(headerCard, "p-4 glass")}>
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
-                <div className="text-sm font-extrabold text-slate-900">Oxirgi harakatlar</div>
-                <div className="text-xs text-slate-500">Sotuv + ombor kirim/chiqim (filter bilan)</div>
+                <div className="text-md font-semibold text-white">Oxirgi harakatlar</div>
+                <div className="text-xs text-gray-400">Sotuv + ombor kirim/chiqim (filter bilan)</div>
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
-                  <span className="text-slate-400">🔎</span>
+                <div className="flex items-center gap-2 rounded-xl border border-slate-200 glass px-3 py-2">
+                  <span className="text-white">🔎</span>
                   <input
                     value={q}
                     onChange={(e) => setQ(e.target.value)}
                     placeholder="Qidirish..."
-                    className="w-56 bg-transparent text-xs text-slate-700 placeholder:text-slate-400 outline-none"
+                    className="w-56 bg-transparent text-xs text-white placeholder:text-white outline-none"
                   />
                 </div>
 
-                <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                <div className="rounded-md border border-slate-200 glass px-3 py-2 text-xs text-white">
                   Sahifa: <b>{page}</b> / {totalPages}
                 </div>
               </div>
@@ -221,7 +221,7 @@ export default function OverviewDashboardPage() {
 
             <div className="mt-4 overflow-x-auto rounded-xl border border-slate-200">
               <table className="min-w-[900px] w-full text-left text-xs">
-                <thead className="bg-slate-50 text-slate-600">
+                <thead className=" glass text-white rounded">
                   <tr>
                     <th className="px-4 py-3 font-bold">Nomi</th>
                     <th className="px-4 py-3 font-bold">Turi</th>
@@ -230,26 +230,26 @@ export default function OverviewDashboardPage() {
                     <th className="px-4 py-3 font-bold text-right">Sana</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-200 text-slate-900">
+                <tbody className="divide-y divide-slate-100 text-white">
                   {rows.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="px-4 py-10 text-center text-slate-500">
+                      <td colSpan={5} className="px-4 py-10 text-center text-white">
                         Hozircha ma’lumot yo‘q.
                       </td>
                     </tr>
                   ) : (
                     rows.map((r) => (
-                      <tr key={String(r.id)} className="hover:bg-slate-50">
+                      <tr key={String(r.id)} className="hover:glass">
                         <td className="px-4 py-3 font-semibold">{r.name}</td>
                         <td className="px-4 py-3">
                           <span
                             className={cx(
                               "inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-bold",
                               r.type === "SALE"
-                                ? "border-emerald-200 bg-emerald-50 text-emerald-700"
+                                ? "border-emerald-200 glass text-emerald-600"
                                 : r.type === "MOVE_IN"
-                                ? "border-sky-200 bg-sky-50 text-sky-700"
-                                : "border-rose-200 bg-rose-50 text-rose-700"
+                                ? "border-sky-200 glass text-sky-700"
+                                : "border-rose-200 glass text-rose-600"
                             )}
                           >
                             {r.type === "SALE" ? "Sotuv" : r.type === "MOVE_IN" ? "Kirim" : "Chiqim"}
@@ -257,7 +257,7 @@ export default function OverviewDashboardPage() {
                         </td>
                         <td className="px-4 py-3">{r.qty}</td>
                         <td className="px-4 py-3">{r.amount ? money(r.amount) : "—"}</td>
-                        <td className="px-4 py-3 text-right text-slate-600">{r.date}</td>
+                        <td className="px-4 py-3 text-right text-white">{r.date}</td>
                       </tr>
                     ))
                   )}
@@ -267,14 +267,14 @@ export default function OverviewDashboardPage() {
 
             <div className="mt-4 flex items-center justify-end gap-2">
               <button
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 disabled:opacity-50"
+                className="rounded-md border border-slate-200 glass px-3 py-2 text-xs font-bold text-white disabled:opacity-120 cursor-pointer"
                 disabled={page <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
               >
                 ◀ Oldingi
               </button>
               <button
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 disabled:opacity-50"
+                className="rounded-md border border-slate-200 glass px-3 py-2 text-xs font-bold text-white disabled:opacity-120 cursor-pointer"
                 disabled={page >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               >

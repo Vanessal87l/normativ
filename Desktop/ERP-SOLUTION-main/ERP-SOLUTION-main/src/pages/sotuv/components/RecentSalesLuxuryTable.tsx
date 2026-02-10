@@ -296,29 +296,29 @@ export default function RecentSalesLuxuryTable({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+    <div className="relative overflow-hidden rounded-2xl border border-slate-200 glass">
       {/* header */}
       <div className="flex flex-col gap-3 border-b border-slate-200 px-5 py-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="text-sm font-extrabold text-slate-900">{title}</div>
-          <div className="text-xs text-slate-500">{subtitle}</div>
+          <div className="text-sm font-extrabold text-white">{title}</div>
+          <div className="text-xs text-white">{subtitle}</div>
         </div>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
           {/* search */}
-          <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
-            <span className="text-slate-400">🔎</span>
+          <div className="flex items-center gap-2 rounded-xl border border-slate-200 glass  px-3 py-2">
+            <span className="text-glass">🔎</span>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder="Qidirish: ism/nomi..."
-              className="w-56 bg-transparent text-xs text-slate-700 placeholder:text-slate-400 outline-none"
+              className="w-56 bg-transparent text-xs text-whie placeholder:text-white outline-none"
             />
           </div>
 
           {/* page info */}
-          <div className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-600">
-            Sahifa: <span className="font-bold text-slate-900">{page}</span> / {totalPages}
+          <div className="rounded-xl border border-slate-200 glass px-3 py-2 text-xs text-white">
+            Sahifa: <span className="font-bold text-white">{page}</span> / {totalPages}
           </div>
         </div>
       </div>
@@ -333,18 +333,18 @@ export default function RecentSalesLuxuryTable({
         )}
 
         {/* table */}
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 glass">
           <table className="min-w-[920px] w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-600">
+            <thead className="glass text-white">
               <tr>
                 <th className="px-4 py-3 font-bold">
                   <button
                     type="button"
                     onClick={() => toggleSort("name")}
-                    className="inline-flex items-center gap-2 hover:text-slate-900"
+                    className="inline-flex items-center gap-2 hover:text-white"
                   >
                     Ism / Nomi
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-white">
                       {sortKey === "name" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
                     </span>
                   </button>
@@ -354,10 +354,10 @@ export default function RecentSalesLuxuryTable({
                   <button
                     type="button"
                     onClick={() => toggleSort("soni")}
-                    className="inline-flex items-center gap-2 hover:text-slate-900"
+                    className="inline-flex items-center gap-2 hover:text-white"
                   >
                     Soni
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-white">
                       {sortKey === "soni" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
                     </span>
                   </button>
@@ -367,10 +367,10 @@ export default function RecentSalesLuxuryTable({
                   <button
                     type="button"
                     onClick={() => toggleSort("narxi")}
-                    className="inline-flex items-center gap-2 hover:text-slate-900"
+                    className="inline-flex items-center gap-2 hover:text-white"
                   >
                     Narxi
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-white">
                       {sortKey === "narxi" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
                     </span>
                   </button>
@@ -380,10 +380,10 @@ export default function RecentSalesLuxuryTable({
                   <button
                     type="button"
                     onClick={() => toggleSort("data")}
-                    className="inline-flex items-center gap-2 hover:text-slate-900"
+                    className="inline-flex items-center gap-2 text-white"
                   >
                     Sana
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-white">
                       {sortKey === "data" ? (sortDir === "asc" ? "▲" : "▼") : "↕"}
                     </span>
                   </button>
@@ -393,40 +393,40 @@ export default function RecentSalesLuxuryTable({
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-200 text-slate-800">
+            <tbody className="divide-y divide-slate-200 text-white">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-slate-500">
+                  <td colSpan={5} className="px-4 py-10 text-center text-white">
                     Yuklanmoqda...
                   </td>
                 </tr>
               ) : pageRows.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-4 py-10 text-center text-slate-500">
+                  <td colSpan={5} className="px-4 py-10 text-center text-white">
                     Hozircha ma’lumot yo‘q.
                   </td>
                 </tr>
               ) : (
                 pageRows.map((r) => (
-                  <tr key={String(r.id)} className="hover:bg-slate-50">
-                    <td className="px-4 py-3 font-semibold text-slate-900">{r.name}</td>
+                  <tr key={String(r.id)} className="glass">
+                    <td className="px-4 py-3 font-semibold text-white">{r.name}</td>
 
                     <td className="px-4 py-3">
-                      <span className="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-bold text-slate-800">
+                      <span className="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 font-bold text-white">
                         {r.soni}
                       </span>
                     </td>
 
-                    <td className="px-4 py-3 text-slate-800">{money(r.narxi)}</td>
+                    <td className="px-4 py-3 text-white">{money(r.narxi)}</td>
 
-                    <td className="px-4 py-3 text-right text-slate-500">{r.data}</td>
+                    <td className="px-4 py-3 text-right text-white">{r.data}</td>
 
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <button
                           type="button"
                           onClick={() => openEdit(r)}
-                          className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
+                          className="rounded-lg border border-slate-200 glass px-3 py-1.5 font-semibold text-white "
                         >
                           ✏️ Tahrirlash
                         </button>
@@ -445,12 +445,12 @@ export default function RecentSalesLuxuryTable({
               )}
             </tbody>
 
-            <tfoot className="bg-slate-50 text-slate-700">
+            <tfoot className="glass text-white">
               <tr>
                 <td className="px-4 py-3 font-bold" colSpan={4}>
                   Jami (narxi × soni)
                 </td>
-                <td className="px-4 py-3 text-right font-extrabold text-slate-900">
+                <td className="px-4 py-3 text-right font-extrabold text-white">
                   {money(totalAmount)}
                 </td>
               </tr>
@@ -460,8 +460,8 @@ export default function RecentSalesLuxuryTable({
 
         {/* pagination */}
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
-          <div className="text-xs text-slate-500">
-            Jami: <span className="font-bold text-slate-900">{totalCount}</span> ta yozuv
+          <div className="text-xs text-white">
+            Jami: <span className="font-bold text-white">{totalCount}</span> ta yozuv
           </div>
 
           <div className="flex items-center justify-end gap-2">
@@ -471,8 +471,8 @@ export default function RecentSalesLuxuryTable({
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               className={cx(
                 "rounded-xl px-3 py-2 text-xs font-bold transition",
-                "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-                "disabled:opacity-50 disabled:hover:bg-white"
+                "border border-slate-200 bg-white text-white ",
+                "disabled:opacity-120 "
               )}
             >
               ◀ Oldingi
@@ -488,8 +488,8 @@ export default function RecentSalesLuxuryTable({
                   className={cx(
                     "rounded-xl px-3 py-2 text-xs font-bold border transition",
                     p === page
-                      ? "border-slate-900 bg-slate-900 text-white"
-                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                      ? "border-slate-900 glass text-white"
+                      : "border-slate-200 glass text-white hover:bg-slate-120"
                   )}
                 >
                   {p}
@@ -502,8 +502,8 @@ export default function RecentSalesLuxuryTable({
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               className={cx(
                 "rounded-xl px-3 py-2 text-xs font-bold transition",
-                "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
-                "disabled:opacity-50 disabled:hover:bg-white"
+                "border border-slate-200 glass text-white ",
+                "disabled:opacity-120 "
               )}
             >
               Keyingi ▶
@@ -514,10 +514,10 @@ export default function RecentSalesLuxuryTable({
 
       {/* ✅ DELETE CONFIRM MODAL */}
       {deleteId != null && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
-            <div className="text-sm font-extrabold text-slate-900">O‘chirishni tasdiqlaysizmi?</div>
-            <div className="mt-2 text-xs text-slate-500">
+        <div className="absolute inset-0 z-50 flex items-center justify-center glass p-4">
+          <div className="w-full max-w-md rounded-2xl border border-slate-200 glass  p-5 ">
+            <div className="text-sm font-extrabold text-white">O‘chirishni tasdiqlaysizmi?</div>
+            <div className="mt-2 text-xs text-white">
               Bu amal qaytarib bo‘lmaydi. Haqiqatan ham o‘chirmoqchimisiz?
             </div>
 
@@ -526,7 +526,7 @@ export default function RecentSalesLuxuryTable({
                 type="button"
                 disabled={deleting}
                 onClick={() => setDeleteId(null)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="rounded-xl border border-slate-200 glass px-4 py-2 text-xs font-bold text-white disabled:opacity-120"
               >
                 Bekor qilish
               </button>
@@ -535,7 +535,7 @@ export default function RecentSalesLuxuryTable({
                 type="button"
                 disabled={deleting}
                 onClick={handleDeleteConfirmed}
-                className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
+                className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100 disabled:opacity-120"
               >
                 {deleting ? "O‘chirilmoqda..." : "O‘chirish"}
               </button>
@@ -546,13 +546,13 @@ export default function RecentSalesLuxuryTable({
 
       {/* ✅ EDIT MODAL */}
       {editOpen && editRow && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
+        <div className="absolute inset-0 z-50 flex items-center justify-center glass p-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 glass p-5 ">
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-extrabold text-slate-900">Tahrirlash</div>
                 <div className="mt-1 text-xs text-slate-500">
-                  ID: <span className="font-bold text-slate-900">{String(editRow.id)}</span>
+                  ID: <span className="font-bold text-slate-700">{String(editRow.id)}</span>
                 </div>
               </div>
 
@@ -560,7 +560,7 @@ export default function RecentSalesLuxuryTable({
                 type="button"
                 onClick={closeEdit}
                 disabled={editSaving}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="rounded-xl border border-slate-200 glass px-3 py-2 text-xs font-bold text-white  hover:bg-slate-50 disabled:opacity-120"
               >
                 ✕
               </button>
@@ -568,35 +568,35 @@ export default function RecentSalesLuxuryTable({
 
             <div className="mt-4 grid gap-3">
               <label className="grid gap-1">
-                <span className="text-xs font-bold text-slate-700">Ism / Nomi</span>
+                <span className="text-xs font-bold text-gray-400">Ism / Nomi</span>
                 <input
                   value={fName}
                   onChange={(e) => setFName(e.target.value)}
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none placeholder:text-slate-400"
+                  className="rounded-xl border border-slate-200 glass px-3 py-2 text-sm text-white outline-none placeholder:text-white"
                   placeholder="Masalan: Yusuf-Latipov"
                 />
               </label>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <label className="grid gap-1">
-                  <span className="text-xs font-bold text-slate-700">Soni</span>
+                  <span className="text-xs font-bold text-white">Soni</span>
                   <input
                     type="number"
                     value={String(fSoni)}
                     onChange={(e) => setFSoni(Number(e.target.value))}
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none"
+                    className="rounded-xl border border-slate-200 glass px-3 py-2 text-sm text-white outline-none"
                     min={1}
                     step={1}
                   />
                 </label>
 
                 <label className="grid gap-1">
-                  <span className="text-xs font-bold text-slate-700">Narxi (1 dona)</span>
+                  <span className="text-xs font-bold text-white">Narxi (1 dona)</span>
                   <input
                     type="number"
                     value={String(fNarxi)}
                     onChange={(e) => setFNarxi(Number(e.target.value))}
-                    className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none"
+                    className="rounded-xl border border-slate-200 glass px-3 py-2 text-sm text-white outline-none"
                     min={0}
                     step={0.01}
                   />
@@ -604,14 +604,14 @@ export default function RecentSalesLuxuryTable({
               </div>
 
               <label className="grid gap-1">
-                <span className="text-xs font-bold text-slate-700">Sana</span>
+                <span className="text-xs font-bold text-white">Sana</span>
                 <input
                   type="date"
                   value={fData}
                   onChange={(e) => setFData(e.target.value)}
-                  className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none"
+                  className="rounded-xl border border-slate-200 glass px-3 py-2 text-sm text-white outline-none"
                 />
-                <span className="text-[11px] text-slate-400">Format: YYYY-MM-DD</span>
+                <span className="text-[11px] text-white">Format: YYYY-MM-DD</span>
               </label>
             </div>
 
@@ -620,7 +620,7 @@ export default function RecentSalesLuxuryTable({
                 type="button"
                 disabled={editSaving}
                 onClick={closeEdit}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                className="rounded-xl border border-slate-200 glass px-4 py-2 text-xs font-bold text-white  disabled:opacity-120  "
               >
                 Bekor qilish
               </button>
@@ -629,7 +629,7 @@ export default function RecentSalesLuxuryTable({
                 type="button"
                 disabled={editSaving}
                 onClick={handleEditSave}
-                className="rounded-xl border border-slate-900 bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:opacity-95 disabled:opacity-50"
+                className="rounded-xl border border-slate-900 glass px-4 py-2 text-xs font-bold text-white  disabled:opacity-120"
               >
                 {editSaving ? "Saqlanmoqda..." : "Saqlash"}
               </button>

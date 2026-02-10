@@ -15,12 +15,12 @@ export default function SalesOverviewCard({
   onRangeChange,
 }: Props) {
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm">
+    <div className="rounded-2xl glass border border-slate-200 p-4 ">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-extrabold text-slate-900">{title}</h3>
-          <div className="mt-1 text-xs text-slate-500">
-            Tanlangan oraliq: <span className="font-bold text-slate-900">{activeRange}</span>
+          <h3 className="text-md font-semibold text-white">{title}</h3>
+          <div className="mt-1 text-xs text-gray-400">
+            Tanlangan oraliq: <span className="font-bold text-white">{activeRange}</span>
           </div>
         </div>
 
@@ -33,8 +33,8 @@ export default function SalesOverviewCard({
               className={[
                 "rounded-lg px-2.5 py-1.5 text-xs font-bold border transition",
                 activeRange === t
-                  ? "bg-slate-900 text-white border-slate-900 shadow-sm"
-                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50",
+                  ? "glass text-white"
+                  : "glass text-gray-400 border-slate-200 ",
               ].join(" ")}
             >
               {t}

@@ -24,7 +24,7 @@ export default function LineChart({
     .join(" ");
 
   return (
-    <div className="w-full overflow-x-auto">
+    <div className="w-full overflow-x-auto glass text-white">
       <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
         {/* grid */}
         {Array.from({ length: 5 }, (_, i) => {
@@ -44,7 +44,7 @@ export default function LineChart({
         {/* line */}
         <path d={dPath} fill="none" stroke="rgba(15,23,42,0.85)" strokeWidth="2.5" />
 
-        {/* points */}
+        {/* points */}  
         {data.map((p, i) => (
           <g key={p.label + i}>
             <circle cx={x(i)} cy={y(p.value)} r="4" fill="#fff" stroke="rgba(15,23,42,0.85)" strokeWidth="2" />

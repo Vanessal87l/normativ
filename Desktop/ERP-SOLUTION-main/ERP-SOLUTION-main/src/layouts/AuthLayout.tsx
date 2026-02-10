@@ -93,10 +93,11 @@ export default function AuthLayout() {
   }, [])
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      <div ref={vantaRef} className="absolute inset-0 -z-10" />
+    <div className="relative bg-fixed  bg-linear-to-br from-black via-[#1a140b] to-[#ff9f1c]
+ min-h-screen w-full overflow-hidden">
+      <div ref={vantaRef} className="absolute inset-0 -z-10 glass" />
 
-      <div className="absolute inset-0 -z-9 bg-gradient-to-r from-[#14ADD6]/20 to-[#384295]/70 backdrop-blur-[10px]" />
+      <div className="absolute inset-0 -z-9 " />
 
       <div className="relative z-10 min-h-screen w-full">
         <Outlet />

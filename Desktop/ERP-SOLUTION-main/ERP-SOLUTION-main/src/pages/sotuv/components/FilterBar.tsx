@@ -6,8 +6,8 @@ type Props = {
 }
 
 const chipBase = "rounded-md px-2.5 py-1 text-xs font-semibold border transition"
-const chipActive = "bg-slate-900 text-white border-slate-900"
-const chipIdle = "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+const chipActive = "glass  text-white "
+const chipIdle = "glass text-gray-400  border-slate-200 "
 
 function todayISO() {
   const d = new Date()
@@ -24,9 +24,9 @@ export default function FilterBar({ onApply }: Props) {
   const [date, setDate] = useState(today)
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl bg-white/70 backdrop-blur border border-slate-200 p-3">
+    <div className="flex flex-col gap-3 rounded-xl glass border border-slate-200 p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-xs font-semibold text-slate-600">Sana bo‘yicha filtrlash:</span>
+        <span className="text-xs font-semibold text-white">Sana bo‘yicha filtrlash:</span>
 
         <button
           type="button"
@@ -52,10 +52,10 @@ export default function FilterBar({ onApply }: Props) {
           Oy
         </button>
 
-        <div className="ml-2 flex items-center gap-2 rounded-md border border-slate-200 bg-white px-2 py-1">
-          <span className="text-xs text-slate-500">📅</span>
+        <div className="ml-2 flex items-center gap-2 rounded-md border border-slate-200 glass px-2 py-1">
+          <span className="text-xs text-white">📅</span>
           <input
-            className="text-xs outline-none text-slate-700"
+            className="text-xs outline-none text-white"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -67,7 +67,7 @@ export default function FilterBar({ onApply }: Props) {
         <button
           type="button"
           onClick={() => onApply?.({ range, date })}
-          className="rounded-md bg-slate-900 text-white px-3 py-2 text-xs font-semibold hover:opacity-95"
+          className="rounded-md glass text-white px-3 py-2 text-xs font-semibold hover:opacity-95"
         >
           Filtrlarni qo‘llash
         </button>

@@ -29,15 +29,15 @@ export default function Sidebar({
     >
       <div className="px-4 pt-4">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 rounded-2xl bg-blue-600/90 shadow-[0_14px_34px_rgba(37,99,235,0.35)]" />
+          <div className="h-12 w-12 rounded-2xl glass  text-white " />
 
           <div className="min-w-0 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-            <div className="font-semibold leading-5 truncate">ERP Admin</div>
-            <div className="text-xs text-slate-500 truncate">Luxury UI</div>
+            <div className="font-semibold text-white leading-5 truncate">ERP Admin</div>
+            <div className="text-xs text-white truncate">Luxury UI</div>
           </div>
         </div>
 
-        <div className="mt-6 px-1 text-xs font-semibold text-slate-400">
+        <div className="mt-6 px-1 text-xs font-semibold text-white">
           <span className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             HOME
           </span>

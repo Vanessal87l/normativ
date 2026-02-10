@@ -27,19 +27,19 @@ export default function Topbar() {
 
         {/* Search pill (rasmga o'xshash) */}
         <div className="flex-1 min-w-0">
-          <div className="rounded-3xl p-[2px] bg-slate-900/10 shadow-[0_12px_26px_rgba(51,79,157,0.30)]">
-            <div className="relative rounded-3xl bg-white/70 backdrop-blur-xl border border-white/50">
+          <div className="rounded-3xl p-[2px] glass ">
+            <div className="relative rounded-3xl ">
               <input
                 className={[
                   "w-full h-10 rounded-3xl",
                   "bg-transparent",
                   "pl-4 pr-10",
                   "outline-none",
-                  "placeholder:text-slate-500 text-sm",
+                  "placeholder:text-white text-sm",
                 ].join(" ")}
                 placeholder="Qidiruv..."
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-white">
                 <Search size={18} />
               </div>
             </div>
@@ -52,12 +52,12 @@ export default function Topbar() {
           <IconBtn><Bell size={18} /></IconBtn>
 
           {/* Profile (rasmda kichik bo'ladi) */}
-          <Link to="/profile" className="flex items-center gap-3 rounded-2xl px-2 py-1 hover:bg-slate-900/5">
-            <div className="h-9 w-9 rounded-2xl bg-slate-900/10" />
+          <Link to="/profile" className="flex items-center gap-3 rounded-2xl px-2 py-1 ">
+            <div className="h-9 w-9 rounded-2xl glass" />
             <img src="" alt="" />
             <div className="leading-4 hidden sm:block">
-              <div className="text-sm font-semibold">Yusuf</div>
-              <div className="text-xs text-slate-500">Admin</div>
+              <div className="text-sm text-white font-semibold">Yusuf</div>
+              <div className="text-xs text-white">Admin</div>
             </div>
           </Link>
         </div>
@@ -97,7 +97,7 @@ function IconBtn({ children }: { children: React.ReactNode }) {
   return (
     <button
       type="button"
-      className="h-10 w-10 rounded-2xl bg-slate-900/5 hover:bg-slate-900/10 grid place-items-center"
+      className="h-10 w-10 rounded-2xl glass grid place-items-center"
     >
       {children}
     </button>
@@ -123,8 +123,8 @@ function TabLink({
         "flex items-center",
         "transition-all duration-200",
         active
-          ? "bg-white shadow-[0_10px_22px_rgba(15,23,42,0.10)] text-slate-900"
-          : "text-slate-700 hover:bg-white/60",
+          ? "glass  shadow-[0_10px_22px_rgba(15,23,42,0.10)] text-white"
+          : "text-white",
       ].join(" ")}
     >
       {label}

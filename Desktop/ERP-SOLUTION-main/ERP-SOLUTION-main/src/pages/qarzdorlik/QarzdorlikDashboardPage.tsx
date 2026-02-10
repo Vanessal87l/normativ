@@ -58,16 +58,16 @@ export default function QarzdorlikDashboardPage() {
 
   if (ui === "loading") {
     return (
-      <div className="min-h-screen bg-gray-100 rounded-2xl">
+      <div className="min-h-screen glass rounded-2xl">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-6">
-            <div className="h-6 w-56 rounded bg-slate-100" />
-            <div className="mt-4 h-10 w-full rounded bg-slate-100" />
+          <div className="rounded-2xl glass border border-slate-200 p-6">
+            <div className="h-6 w-56 rounded glass" />
+            <div className="mt-4 h-10 w-full rounded glass" />
             <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-              <div className="h-28 rounded-2xl bg-slate-100" />
-              <div className="h-28 rounded-2xl bg-slate-100" />
-              <div className="h-28 rounded-2xl bg-slate-100" />
-              <div className="h-28 rounded-2xl bg-slate-100" />
+              <div className="h-28 rounded-2xl glass "/>
+              <div className="h-28 rounded-2xl glass"/>
+              <div className="h-28 rounded-2xl glass" />
+              <div className="h-28 rounded-2xl glass" />
             </div>
           </div>
         </div>
@@ -77,14 +77,14 @@ export default function QarzdorlikDashboardPage() {
 
   if (ui === "error" || !data) {
     return (
-      <div className="min-h-screen bg-gray-100 rounded-2xl">
+      <div className="min-h-screen glass rounded-2xl">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-8">
-            <div className="text-lg font-extrabold text-slate-900">Xatolik yuz berdi</div>
-            <div className="mt-2 text-sm text-slate-500">Backend yoki internet muammo bo‘lishi mumkin.</div>
+          <div className="rounded-2xl glass border border-slate-200  p-8">
+            <div className="text-lg font-extrabold text-white">Xatolik yuz berdi</div>
+            <div className="mt-2 text-sm text-white">Backend yoki internet muammo bo‘lishi mumkin.</div>
             <button
               onClick={() => setReloadKey((k) => k + 1)}
-              className="mt-4 rounded-md bg-slate-900 text-white px-4 py-2 text-sm font-bold"
+              className="mt-4 rounded-md glass text-white px-4 py-2 text-sm font-bold"
             >
               Qayta urinib ko‘rish
             </button>
@@ -95,24 +95,24 @@ export default function QarzdorlikDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 rounded-2xl">
+    <div className="min-h-screen glass rounded-2xl">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900">
+            <h1 className="text-2xl font-extrabold text-white">
               Xush kelibsiz, {userName}!
             </h1>
-            <div className="mt-1 text-sm text-slate-500">
+            <div className="mt-1 text-sm text-white">
               Qarzdorlik va moliyaviy ko‘rsatkichlar paneli
             </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50">
+            <button className="rounded-xl border border-slate-200 glass px-3 py-2 text-xs font-bold text-white">
               Widgetlarni boshqarish
             </button>
-            <button className="rounded-xl bg-indigo-600 text-white px-3 py-2 text-xs font-bold hover:opacity-95">
+            <button className="rounded-xl glass text-white px-3 py-2 text-xs font-bold hover:opacity-95">
               + Yangi widget
             </button>
           </div>

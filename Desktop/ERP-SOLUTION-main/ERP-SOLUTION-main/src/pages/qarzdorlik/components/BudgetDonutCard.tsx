@@ -20,13 +20,13 @@ export default function BudgetDonutCard({ title = "Byudjet", budget }: Props) {
   const dash = Math.max(0.05, Math.min(0.95, fill)) * c;
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-4">
+    <div className="rounded-2xl glass border border-slate-200  p-4">
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-sm font-extrabold text-slate-900">{title}</div>
-          <div className="mt-1 text-xs text-slate-500">Kategoriya bo‘yicha</div>
+          <div className="text-sm font-extrabold text-white">{title}</div>
+          <div className="mt-1 text-xs text-white">Kategoriya bo‘yicha</div>
         </div>
-        <button className="h-8 w-8 rounded-full border border-slate-200 bg-white hover:bg-slate-50 transition">
+        <button className="h-8 w-8 rounded-full border border-slate-200 glass  transition">
           ↗
         </button>
       </div>
@@ -49,18 +49,18 @@ export default function BudgetDonutCard({ title = "Byudjet", budget }: Props) {
           </svg>
 
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="text-xs font-bold text-slate-500">{percent}%</div>
-            <div className="text-[11px] text-slate-400">{money(budget.total)}</div>
+            <div className="text-xs font-bold text-white">{percent}%</div>
+            <div className="text-[11px] text-white">{money(budget.total)}</div>
           </div>
         </div>
 
         <div className="flex-1">
-          <div className="text-xs font-bold text-slate-700">Jami: {money(budget.total)}</div>
+          <div className="text-xs font-bold text-white">Jami: {money(budget.total)}</div>
           <div className="mt-2 grid gap-1">
             {budget.items.slice(0, 6).map((x) => (
               <div key={x.name} className="flex items-center justify-between text-xs">
-                <span className="text-slate-600">{x.name}</span>
-                <span className="font-bold text-slate-900">{money(x.amount)}</span>
+                <span className="text-white">{x.name}</span>
+                <span className="font-bold text-white">{money(x.amount)}</span>
               </div>
             ))}
           </div>

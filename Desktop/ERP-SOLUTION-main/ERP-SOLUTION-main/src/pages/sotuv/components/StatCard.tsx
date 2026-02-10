@@ -30,14 +30,14 @@ export default function StatCard({
       : "text-slate-900";
 
   return (
-    <div className="relative rounded-2xl bg-white border border-slate-200 p-4 shadow-sm hover:shadow-md transition">
+    <div className="relative rounded-2xl glass border border-slate-200 p-4 transition">
       {/* Icon */}
-      <div className="absolute top-3 right-3 text-slate-400 text-lg">
+      <div className="absolute top-3 right-3 text-whitetext-lg">
         {icon}
       </div>
 
       {/* Title */}
-      <div className="text-xs font-semibold text-slate-500">
+      <div className="text-xs font-semibold text-white">
         {title}
       </div>
 
@@ -47,7 +47,7 @@ export default function StatCard({
       </div>
 
       {/* Sub text */}
-      <div className="mt-1 text-xs text-slate-500">
+      <div className="mt-1 text-xs text-white">
         {sub}
       </div>
     </div>

@@ -25,23 +25,23 @@ export default function MiniInfoCard({
   // Badge rangini aniqlash
   const badge =
     badgeType === "danger"
-      ? "bg-red-100 text-red-700 border-red-200"
-      : "bg-slate-100 text-slate-700 border-slate-200";
+      ? "glass text-red-700 border-red-200"
+      : "glass text-black/80 border-slate-200";
 
   return (
-    <div className="rounded-xl bg-white border border-slate-200 p-4 shadow-sm">
+    <div className="rounded-xl glass border border-slate-200 p-4 shadow-sm">
       {/* Sarlavha va ikonka */}
       <div className="flex items-center justify-between">
-        <div className="text-xs font-bold text-slate-700">
+        <div className="text-xs font-bold text-white">
           {title}
         </div>
-        <div className="text-slate-500 text-sm">
+        <div className="text-white text-sm">
           {icon}
         </div>
       </div>
 
       {/* Katta qiymat */}
-      <div className="mt-3 text-3xl font-extrabold text-slate-900">
+      <div className="mt-3 text-3xl font-extrabold text-white">
         {big}
       </div>
 

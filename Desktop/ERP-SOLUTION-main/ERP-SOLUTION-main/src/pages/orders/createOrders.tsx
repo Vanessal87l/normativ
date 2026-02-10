@@ -150,12 +150,12 @@ const NewOrderDialog = ({ onCreate }: Props) => {
       {/* Trigger – xohlagan joyga qo‘yasan */}
 
       {/* Full-screen-ish dialog like screenshot */}
-      <div className="p-0  border-none max-w-[1100px]">
+      <div className="p-0  border-none  max-w-[1100px]">
         <div className="p-6">
           {/* Top header */}
           <div className="flex items-start justify-between mb-5">
             <div>
-              <h1 className="text-2xl font-semibold text-slate-800">
+              <h1 className="text-2xl font-semibold text-white">
                 Create New Order
               </h1>
             </div>
@@ -166,7 +166,7 @@ const NewOrderDialog = ({ onCreate }: Props) => {
             {/* LEFT */}
             <div className="space-y-6">
               {/* Client Details */}
-              <section className="bg-white rounded-xl border border-slate-200 shadow-sm p-6">
+              <section className="glass rounded-xl border border-slate-200 p-6">
                 <h3 className="font-semibold text-slate-800 mb-5">Client Details</h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-[1fr_110px] gap-3 items-end">

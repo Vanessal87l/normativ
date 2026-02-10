@@ -4,7 +4,7 @@ import { Outlet } from "react-router-dom";
 
 export default function OrdersLayout() {
   return (
-<div className="min-h-screen bg-[#D8E9F0] py-4 px-15 ">
+<div className="min-h-screen  py-4 px-15 ">
       <Outlet />
   </div>
   )

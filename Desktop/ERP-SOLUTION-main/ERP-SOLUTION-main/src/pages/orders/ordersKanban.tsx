@@ -178,7 +178,7 @@ const OrdersKanban = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold pb-5 pl-5">Orders Table</h1>
+      <h1 className="text-2xl font-bold pb-5 pl-5 bg-red-600">Orders Table</h1>
 
       {/* TOP BAR */}
       <div className="flex flex-col gap-3 md:flex-row md:justify-between md:items-center px-4">

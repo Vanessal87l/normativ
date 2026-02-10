@@ -24,9 +24,9 @@ const cardBase = "rounded-xl bg-white border border-slate-200 shadow-sm";
 function Skeleton() {
   return (
     <div className={`${cardBase} p-4`}>
-      <div className="h-4 w-40 bg-slate-100 rounded" />
-      <div className="mt-3 h-10 w-56 bg-slate-100 rounded" />
-      <div className="mt-3 h-24 w-full bg-slate-100 rounded" />
+      <div className="h-4 w-40 glass rounded" />
+      <div className="mt-3 h-10 w-56 glass rounded" />
+      <div className="mt-3 h-24 w-full glass rounded" />
     </div>
   );
 }
@@ -124,8 +124,8 @@ export default function SkladDashboardPage() {
   } else if (ui === "empty") {
     body = (
       <div className={`${cardBase} p-10 text-center`}>
-        <div className="text-lg font-extrabold text-slate-900">Hozircha ma’lumot yo‘q</div>
-        <div className="mt-2 text-sm text-slate-500">
+        <div className="text-lg font-extrabold text-white">Hozircha ma’lumot yo‘q</div>
+        <div className="mt-2 text-sm text-white">
           Filtrlarni o‘zgartirib ko‘ring yoki backenddan data kelishini tekshiring.
         </div>
       </div>
@@ -133,14 +133,14 @@ export default function SkladDashboardPage() {
   } else if (ui === "error") {
     body = (
       <div className={`${cardBase} p-10`}>
-        <div className="text-lg font-extrabold text-slate-900">Xatolik yuz berdi</div>
-        <div className="mt-2 text-sm text-slate-500">
+        <div className="text-lg font-extrabold text-white">Xatolik yuz berdi</div>
+        <div className="mt-2 text-sm text-white">
           API error yoki internet muammo bo‘lishi mumkin.
         </div>
         <button
           type="button"
           onClick={handleRetry}
-          className="mt-4 rounded-md bg-slate-900 text-white px-4 py-2 text-sm font-bold"
+          className="mt-4 rounded-md glass text-white px-4 py-2 text-sm font-bold"
         >
           Qayta urinib ko‘rish
         </button>
@@ -204,15 +204,15 @@ export default function SkladDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f3f6f8]">
+    <div className="min-h-screen glass">
       <div className="max-w-7xl mx-auto px-4 py-6">
         {/* ✅ HEADER + Omborga o'tish tugmasi */}
         <div className="mt-1 flex items-center justify-between gap-3 flex-wrap">
           <div>
-            <h1 className="text-2xl font-extrabold text-slate-900">
+            <h1 className="text-2xl font-extrabold text-white">
               Xush kelibsiz, {userName}!
             </h1>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-white">
               Sklad ko‘rsatkichlari va harakatlar
             </p>
           </div>
@@ -220,7 +220,7 @@ export default function SkladDashboardPage() {
           <button
             type="button"
             onClick={() => nav("/dashboard/sklad/warehouse/overview")}
-            className="rounded-xl bg-slate-900 text-white px-4 py-2 text-xs font-bold"
+            className="rounded-xl glass text-white px-4 py-2 text-xs font-bold"
           >
             Omborga kirish →
           </button>

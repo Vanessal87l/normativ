@@ -23,9 +23,9 @@ export default function SkladFilterBar({ onApply }: Props) {
   const [date, setDate] = useState(today);
 
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-3 shadow-sm">
+    <div className="rounded-2xl glass border border-slate-200 p-3">
       <div className="flex flex-wrap items-center gap-2">
-        <span className="text-sm font-semibold text-slate-700">
+        <span className="text-sm font-semibold text-white">
           Sana bo‘yicha filtrlash:
         </span>
 
@@ -53,10 +53,10 @@ export default function SkladFilterBar({ onApply }: Props) {
           Oy
         </button>
 
-        <div className="ml-2 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 h-9">
-          <span className="text-xs text-slate-500">📅</span>
+        <div className="ml-2 flex items-center gap-2 rounded-xl border border-slate-200 glass px-3 h-9">
+          <span className="text-xs text-white">📅</span>
           <input
-            className="text-xs outline-none text-slate-700"
+            className="text-xs outline-none text-white"
             type="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
@@ -68,7 +68,7 @@ export default function SkladFilterBar({ onApply }: Props) {
         <button
           type="button"
           onClick={() => onApply?.({ range, date })}
-          className="h-9 px-4 rounded-xl bg-slate-900 text-white text-sm font-semibold hover:opacity-95"
+          className="h-9 px-4 rounded-xl glass text-white text-sm font-semibold "
         >
           Filtrlarni qo‘llash
         </button>

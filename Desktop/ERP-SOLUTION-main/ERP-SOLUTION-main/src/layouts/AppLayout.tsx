@@ -8,18 +8,18 @@ export default function AppLayout() {
   const isDashboardRoute = location.pathname.startsWith("/dashboard");
 
   return (
-    <div className="min-h-screen w-full bg-slate-100">
+    <div className="min-h-screen w-full bg-linear-to-br from-black via-[#1a140b] to-[#ff9f1c]
+">
       <div className="mx-auto max-w-[1400px] px-4 py-4">
         <div className="flex gap-4">
           <Sidebar />
 
           <div className="flex min-w-0 flex-1 flex-col gap-4">
             <Topbar />
-
             {isDashboardRoute && (
-              <div className="rounded-2xl bg-white px-3 py-2 shadow-sm">
-                <div className="flex flex-wrap gap-2">
-                  <DashTab to="/dashboard">Dashboard</DashTab>
+              <div className="rounded-2xl  glass  bg-fixed px-3 py-2 ">
+                <div className="flex flex-wrap gap-2   ">
+                  <DashTab  to="/dashboard">Dashboard</DashTab>
                   <DashTab to="/dashboard/sotuv">Sotuv dashboard</DashTab>
                   <DashTab to="/dashboard/sklad">Sklad dashboard</DashTab>
                   <DashTab to="/dashboard/qarzdorlik">Qarzdorlik</DashTab>
@@ -27,7 +27,9 @@ export default function AppLayout() {
               </div>
             )}
 
-            <main className="glass min-w-0 overflow-hidden p-4 md:p-6">
+            
+            <main className="glass min-w-0 overflow-hidden p-4 bg-linear-to-br from-black via-[#1a140b] to-[#ff9f1c] 
+            bg-fixed md:p-6">
               <Outlet />
             </main>
           </div>
@@ -46,8 +48,8 @@ function DashTab({ to, children }: { to: string; children: React.ReactNode }) {
         [
           "rounded-xl px-4 py-2 text-sm font-medium transition",
           isActive
-            ? "bg-slate-900 text-white"
-            : "bg-slate-100 text-slate-700 hover:bg-slate-200",
+            ? "bg-slate-900/90 text-white glass"
+            : "glass text-gray-400",
         ].join(" ")
       }
     >

@@ -10,8 +10,8 @@ type Props = {
 };
 
 const tabBase = "rounded-lg px-2.5 py-1.5 text-xs font-bold border transition";
-const tabActive = "bg-slate-900 text-white border-slate-900";
-const tabIdle = "bg-white text-slate-600 border-slate-200 hover:bg-slate-50";
+const tabActive = "glass text-white border-slate-900";
+const tabIdle = "glass text-white border-slate-200 hover:bg-slate-50";
 
 export default function StockBarChartCard({
   title = "Ombor kirim/chiqim ko‘rinishi",
@@ -21,14 +21,14 @@ export default function StockBarChartCard({
   seriesOut,
 }: Props) {
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-4 shadow-sm">
+    <div className="rounded-2xl glass border border-slate-200 p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <h3 className="text-sm font-extrabold text-slate-900">{title}</h3>
-          <div className="mt-1 text-xs text-slate-500">
-            Tanlangan oraliq: <span className="font-bold text-slate-900">{range}</span>
+          <h3 className="text-sm font-extrabold text-white">{title}</h3>
+          <div className="mt-1 text-xs text-white">
+            Tanlangan oraliq: <span className="font-bold text-white">{range}</span>
           </div>
-          <div className="mt-1 text-[11px] text-slate-500">
+          <div className="mt-1 text-[11px] text-white">
             Qora: Kirim, Kulrang: Chiqim
           </div>
         </div>

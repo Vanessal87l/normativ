@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+#root {
+  position: relative;
+  z-index: 1;
+}
+
 /* ✅ Luxury dark gradient (table/card uchun) */
 .lux-shell {
   background-image:
@@ -23,34 +28,6 @@
 }
 
 
-html,
-body,
-#root {
-  height: 100%;
-}
-
-body {
-  color: #0f172a;
-}
-
-/* Glass */
-.glass {
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-}
-
-.glass-strong {
-  background: rgba(255, 255, 255, 0.65);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.10);
-}
 
 .navbar2-button-color {
   background-color: #6049E3;
@@ -59,11 +36,11 @@ body {
 
 
 h1 {
-  color: black;
+  color: white;
 }
 
 h2 {
-  color: black;
+  color: white;
   font-size: 18px;
 }
 
@@ -73,15 +50,7 @@ h2 {
   color: white;
 }
 
-h1 {
-  color: black;
-}
 
-h2 {
-  color: black;
-  font-size: 18px;
-
-}
 
 @layer base {
   :root {
@@ -116,6 +85,13 @@ select option:hover {
 }
 
 
+.glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+}
 
 .glav-font {
   font-family: "Arsenal", sans-serif;
@@ -124,4 +100,4 @@ select option:hover {
 .glav-font2 {
   font-family: "Arsenal", sans-serif;
   font-weight: 600;
-}
+  }

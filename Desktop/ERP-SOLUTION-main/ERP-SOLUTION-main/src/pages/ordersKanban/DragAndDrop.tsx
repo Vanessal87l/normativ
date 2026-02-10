@@ -24,7 +24,6 @@ import {
   ClipboardList,
   MapPin,
   Phone,
-  MessageSquareText,
 } from "lucide-react"
 
 import SearchBar from "@/pages/ordersKanban/Search"
@@ -74,6 +73,7 @@ const INITIAL: ColumnsState = {
   delivery: [{ id: "7", orderNo: "ORD-007", customer: "Grace Green", amount: 200, status: "Partial", icon: "truck" }],
 }
 
+
 function findColumn(state: ColumnsState, itemId: string): ColumnId | null {
   return (Object.keys(state) as ColumnId[]).find((c) => state[c].some((i) => i.id === itemId)) ?? null
 }
@@ -107,6 +107,7 @@ function getNextOrderNo(state: ColumnsState) {
   return `ORD-${padded}`
 }
 
+
 function FullScreenPanel({
   open,
   title,
@@ -123,35 +124,31 @@ function FullScreenPanel({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-[500] bg-white flex flex-col">
-      <div className="h-16 shrink-0 border-b border-black/10 px-6 flex items-center justify-between">
+    <div className="fixed inset-0 z-[500] bg-black rounded-2xl flex flex-col">
+      <div className="h-16 shrink-0 px-6 flex items-center justify-between  rounded-none">
         <div className="flex items-center gap-3">
           <button
             onClick={onClose}
-            className="h-10 px-3 rounded-xl inline-flex items-center gap-2 font-extrabold hover:bg-black/5"
+            className="h-10 px-3 rounded-xl inline-flex items-center gap-2 font-extrabold text-white"
           >
             <ArrowLeft className="h-5 w-5" />
             Back
           </button>
-          <div className="text-lg font-extrabold text-[#1d1f21]">{title}</div>
+          <div className="text-lg font-extrabold text-white">{title}</div>
         </div>
 
         <button
           onClick={onClose}
-          className="h-10 w-10 rounded-xl inline-flex items-center justify-center hover:bg-black/5"
+          className="h-10 w-10 rounded-xl inline-flex items-center justify-center"
           title="Close"
         >
-          <X className="h-5 w-5 text-[#1d1f21]" />
+          <X className="h-5 w-5 text-white" />
         </button>
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto px-6 py-6">{children}</div>
 
-      {footer ? (
-        <div className="shrink-0 border-t border-black/10 bg-white px-6 py-4">
-          {footer}
-        </div>
-      ) : null}
+      {footer ? <div className="shrink-0  rounded-none px-6 py-4">{footer}</div> : null}
     </div>
   )
 }
@@ -171,21 +168,24 @@ function OrderCard({
 
   const statusStyles =
     item.status === "Paid"
-      ? "bg-emerald-100 text-emerald-700"
+      ? "bg-emerald-600/80 text-white"
       : item.status === "Partial"
-      ? "bg-amber-100 text-[#1d1f21]"
-      : "bg-[#FF5E22]/15 text-[#FF5E22]"
+      ? "bg-amber-400/50 text-white"
+      : "bg-yellow-400/50 text-white"
 
   return (
-    <div className="mt-4 w-full rounded-xl bg-[#d8E9F0] p-5 shadow-[0_12px_40px_-26px_rgba(0,0,0,0.45)]">
+    <div className="mt-4 w-full rounded-2xl p-5">
       <div className="flex items-start justify-between">
         <div>
-          <div className="text-[18px] font-extrabold text-[#1d1f21]">{item.orderNo}</div>
-          <div className="text-sm text-[#5b656f]">{item.customer}</div>
+          <div className="text-[18px] font-extrabold text-white">{item.orderNo}</div>
+          <div className="text-sm text-white">{item.customer}</div>
+        </div>
+
+        <div className="h-10 w-10 rounded-xl  inline-flex items-center justify-center">
         </div>
       </div>
 
-      <div className="mt-4 text-[22px] font-extrabold text-[#1d1f21]">${item.amount.toFixed(2)}</div>
+      <div className="mt-4 text-[22px] font-extrabold text-white">${item.amount.toFixed(2)}</div>
 
       <div className="mt-3 flex items-center gap-2">
         <span className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-bold ${statusStyles}`}>
@@ -193,21 +193,21 @@ function OrderCard({
         </span>
       </div>
 
-      <div className="my-4 h-px bg-black/10" />
+      <div className="my-4 h-px glass" />
 
       <div className="flex items-center justify-between">
         <button
           onClick={() => onView(item)}
-          className="flex items-center text-[#1d1f21] gap-2 rounded-full px-3 py-2 text-sm font-semibold cursor-pointer hover:bg-black/5"
+          className="flex items-center text-white gap-2 rounded-full px-3 py-2 text-sm font-semibold cursor-pointer"
         >
           <Eye className="h-4 w-4" />
           View Details
         </button>
 
-        <div className="flex gap-2 text-[#1d1f21]">
+        <div className="flex gap-2 text-white">
           <button
             onClick={() => onQuickEdit(item)}
-            className="h-9 w-9 rounded-full inline-flex items-center justify-center cursor-pointer hover:bg-black/5"
+            className="h-9 w-9 rounded-full inline-flex items-center justify-center cursor-pointer"
             title="Edit"
           >
             <Pencil className="h-5 w-5" />
@@ -215,10 +215,10 @@ function OrderCard({
 
           <button
             onClick={() => onAskDelete(item)}
-            className="h-9 w-9 rounded-full inline-flex items-center justify-center cursor-pointer hover:bg-black/5"
+            className="h-9 w-9 rounded-full inline-flex items-center justify-center cursor-pointer "
             title="Delete"
           >
-            <X className="h-5 w-5 text-[#FF5E22]" />
+            <X className="h-5 w-5 text-rose-300" />
           </button>
         </div>
       </div>
@@ -237,13 +237,9 @@ function DraggableCard({
   onQuickEdit: (item: OrderItem) => void
   onAskDelete: (item: OrderItem) => void
 }) {
-  const { setNodeRef, listeners, attributes, transform, isDragging } = useDraggable({
-    id: item.id,
-  })
+  const { setNodeRef, listeners, attributes, transform, isDragging } = useDraggable({ id: item.id })
 
-  const style: React.CSSProperties = {
-    transform: CSS.Translate.toString(transform),
-  }
+  const style: React.CSSProperties = { transform: CSS.Translate.toString(transform) }
 
   return (
     <div
@@ -257,6 +253,7 @@ function DraggableCard({
     </div>
   )
 }
+
 
 function Column({
   id,
@@ -276,22 +273,25 @@ function Column({
   const { setNodeRef, isOver } = useDroppable({ id })
 
   return (
-    <div className="w-[340px] min-w-[340px]">
-      <div className="rounded-2xl border border-black/10 bg-white p-5 shadow-md flex flex-col h-[calc(100vh-140px)]">
+    <div className="w-[340px] min-w-[340px] border rounded-2xl border-white/20">
+      <div className="rounded-2xl  p-5 flex flex-col h-[calc(100vh-140px)]">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-extrabold">{title}</h3>
-          <span className="h-7 min-w-7 rounded-full bg-[#02437B] px-2 text-xs font-bold text-white flex items-center justify-center">
+          <h3 className="text-lg font-extrabold text-white">{title}</h3>
+          <span className="h-7 min-w-7 rounded-full px-2 text-xs font-bold text-white flex items-center justify-center">
             {items.length}
           </span>
         </div>
 
-        <div ref={setNodeRef} className={["mt-4 flex-1 overflow-auto rounded-xl", isOver ? "bg-black/5" : ""].join(" ")}>
+        <div
+          ref={setNodeRef}
+          className={["mt-4 flex-1 overflow-auto rounded-xl", isOver ? "bg-white/5" : ""].join(" ")}
+        >
           {items.map((item) => (
             <DraggableCard key={item.id} item={item} onView={onView} onQuickEdit={onQuickEdit} onAskDelete={onAskDelete} />
           ))}
 
           {items.length === 0 && (
-            <div className="mt-4 rounded-xl border border-dashed border-black/20 p-4 text-center text-sm text-[#5b656f]">
+            <div className="mt-4 rounded-xl glass p-4 text-center text-sm text-white">
               Drop here
             </div>
           )}
@@ -301,13 +301,14 @@ function Column({
   )
 }
 
+
 function MiniRow({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border border-black/10 p-4">
+    <div className="flex items-start gap-3 rounded-2xl glass p-4">
       <div className="mt-[2px]">{icon}</div>
       <div className="min-w-0">
-        <div className="text-xs font-extrabold text-[#5b656f]">{label}</div>
-        <div className="mt-1 text-sm font-extrabold text-[#1d1f21] truncate">{value}</div>
+        <div className="text-xs font-extrabold text-white">{label}</div>
+        <div className="mt-1 text-sm font-extrabold text-white truncate">{value}</div>
       </div>
     </div>
   )
@@ -321,23 +322,23 @@ function PlaceholderItems({ count = 4 }: { count?: number }) {
   }))
 
   return (
-    <div className="rounded-2xl border border-black/10 p-5">
+    <div className="rounded-2xl glass p-5">
       <div className="flex items-center justify-between">
-        <div className="text-[18px] font-extrabold text-[#5b656f] inline-flex items-center gap-2">
-          <ClipboardList className="h-5 w-5" />
+        <div className="text-[18px] font-extrabold text-white inline-flex items-center gap-2">
+          <ClipboardList className="h-5 w-5 text-white" />
           Items
         </div>
-        <span className="text-xs font-extrabold text-[#5b656f]">{items.length} lines</span>
+        <span className="text-xs font-extrabold text-white">{items.length} lines</span>
       </div>
 
       <div className="mt-4 space-y-3">
         {items.map((it, idx) => (
-          <div key={idx} className="flex items-center justify-between rounded-xl bg-black/[0.03] border border-black/10 px-4 py-3">
+          <div key={idx} className="flex items-center justify-between rounded-xl  px-4 py-3 border border-white/10">
             <div className="min-w-0">
-              <div className="text-sm font-extrabold text-[#1d1f21] truncate">{it.name}</div>
-              <div className="text-xs font-bold text-[#5b656f]">Qty: {it.qty}</div>
+              <div className="text-sm font-extrabold text-white truncate">{it.name}</div>
+              <div className="text-xs font-bold text-white">Qty: {it.qty}</div>
             </div>
-            <div className="text-sm font-extrabold text-[#1d1f21]">${it.price.toFixed(2)}</div>
+            <div className="text-sm font-extrabold text-white">${it.price.toFixed(2)}</div>
           </div>
         ))}
       </div>
@@ -458,7 +459,6 @@ export default function DragAndDropBoard() {
 
     setColumns((prev) => {
       let next = updateItemInPlace(prev, updated)
-
       const fromCol = findColumn(next, updated.id)
       const toCol = editColumn
       if (fromCol && fromCol !== toCol) {
@@ -514,19 +514,19 @@ export default function DragAndDropBoard() {
 
   const statusBadge =
     selected?.status === "Paid"
-      ? "bg-emerald-100 text-emerald-700"
+      ? "bg-emerald-400/20 text-emerald-100"
       : selected?.status === "Partial"
-      ? "bg-amber-100 text-[#1d1f21]"
-      : "bg-[#FF5E22]/15 text-[#FF5E22]"
+      ? "bg-amber-400/50 text-white"
+      : "bg-yellow-400/50 text-white"
 
   return (
-    <div className="min-h-screen w-full rounded-md flex flex-col">
+    <div className="min-h-screen w-full rounded-2xl flex flex-col p-4">
       <div className="px-2 pb-4 flex gap-4 items-center">
         <SearchBar q={q} setQ={setQ} status={status} setStatus={setStatus} />
 
         <button
           onClick={openAdd}
-          className="h-10 px-4 rounded-xl cursor-pointer shadow-md bg-[#02437B] text-white font-extrabold hover:opacity-95 inline-flex items-center gap-2"
+          className="h-10 px-4 rounded-xl cursor-pointer border border-white/20 text-white font-extrabold  inline-flex items-center gap-2"
         >
           <Plus className="h-5 w-5" />
           Add Orders
@@ -534,7 +534,7 @@ export default function DragAndDropBoard() {
       </div>
 
       <DndContext sensors={sensors} onDragStart={onDragStart} onDragEnd={onDragEnd}>
-        <div className="flex gap-6 overflow-x-auto h-[400px] px-2 pb-4 flex-1">
+        <div className="flex gap-6 overflow-x-auto px-2 pb-4 flex-1">
           {COLUMNS.map((c) => (
             <Column
               key={c.id}
@@ -564,7 +564,7 @@ export default function DragAndDropBoard() {
         onClose={closeDetails}
         footer={
           editMode && selected ? (
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end  gap-2">
               <button
                 onClick={() => {
                   setEditCustomer(selected.customer)
@@ -575,13 +575,14 @@ export default function DragAndDropBoard() {
                   setEditNotes(`Contact customer, confirm items, and prepare invoice for ${selected.orderNo}.`)
                   setEditMode(false)
                 }}
-                className="h-10 px-4 rounded-xl cursor-pointer border border-black/10 font-extrabold hover:bg-black/5"
+                className="h-10 px-4 rounded-xl cursor-pointer glass text-white font-extrabold "
               >
                 Cancel
               </button>
+
               <button
                 onClick={saveEdit}
-                className="h-10 px-4 rounded-xl bg-[#02437B] cursor-pointer text-white font-extrabold hover:opacity-95 inline-flex items-center gap-2"
+                className="h-10 px-4 rounded-xl cursor-pointer glass text-white font-extrabold inline-flex items-center gap-2"
               >
                 <Check className="h-5 w-5" />
                 Save
@@ -591,10 +592,10 @@ export default function DragAndDropBoard() {
         }
       >
         {selected && (
-          <div className="w-full max-w-[1280px] mx-auto  min-h-[calc(100vh-64px-48px)]">
+          <div className="w-full max-w-[1280px] mx-auto rounded-2xl min-h-[calc(100vh-64px-48px)] bg-black p-5 ">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="text-[25px] font-bold text-[#5b656f]">Order details</div>
+                <div className="text-[25px] font-bold text-white">Order details</div>
                 <span className={`inline-flex h-7 items-center rounded-full px-3 text-xs font-bold ${statusBadge}`}>
                   {selected.status}
                 </span>
@@ -604,7 +605,7 @@ export default function DragAndDropBoard() {
                 {!editMode && (
                   <button
                     onClick={() => setEditMode(true)}
-                    className="h-10 px-4 rounded-xl cursor-pointer border border-black/10 inline-flex items-center gap-2 font-extrabold hover:bg-black/5"
+                    className="h-10 px-4 rounded-xl cursor-pointer glass text-white inline-flex items-center gap-2 font-extrabold "
                   >
                     <Pencil className="h-5 w-5" />
                     Edit
@@ -613,7 +614,7 @@ export default function DragAndDropBoard() {
 
                 <button
                   onClick={() => askDelete(selected)}
-                  className="h-10 px-4 rounded-xl cursor-pointer border border-black/10 inline-flex items-center gap-2 font-extrabold hover:bg-black/5 text-[#FF5E22]"
+                  className="h-10 px-4 rounded-xl cursor-pointer glass inline-flex items-center gap-2 font-extrabold text-rose-200"
                 >
                   <Trash2 className="h-5 w-5" />
                   Delete
@@ -622,81 +623,137 @@ export default function DragAndDropBoard() {
             </div>
 
             <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-2xl border border-black/10 p-5">
-                <div className="text-[18px] font-semibold text-[#5b656f]">Customer</div>
+              <div className="rounded-2xl glass p-5">
+                <div className="text-[18px] font-semibold text-white">Customer</div>
                 {editMode ? (
                   <input
                     value={editCustomer}
                     onChange={(e) => setEditCustomer(e.target.value)}
-                    className="mt-2 w-full rounded-xl border focus:shadow-md border-black/10 px-3 py-2 text-md outline-none"
+                    className="mt-2 w-full rounded-xl px-3 py-2 glass"
+                    placeholder="Customer"
                   />
                 ) : (
-                  <div className="mt-2 text-[15px] font-extrabold text-[#1d1f21]">{selected.customer}</div>
+                  <div className="mt-2 text-[15px] font-extrabold text-white">{selected.customer}</div>
                 )}
               </div>
 
-              <div className="rounded-2xl border border-black/10 p-5">
-                <div className="text-[18px] font-semibold text-[#5b656f]">Amount</div>
+              <div className="rounded-2xl glass p-5">
+                <div className="text-[18px] font-semibold text-white">Amount</div>
                 {editMode ? (
                   <input
                     value={editAmount}
                     onChange={(e) => setEditAmount(e.target.value)}
-                    className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-[15px] outline-none focus:shadow-md"
+                    className="mt-2 w-full rounded-xl px-3 py-2 glass"
+                    placeholder="99.99"
                   />
                 ) : (
-                  <div className="mt-2 text-[20px] font-extrabold text-[#1d1f21]">${selected.amount.toFixed(2)}</div>
+                  <div className="mt-2 text-[20px] font-extrabold text-white">${selected.amount.toFixed(2)}</div>
                 )}
               </div>
 
-              <div className="rounded-2xl border border-black/10 p-5">
-                <div className="text-[18px] font-semibold text-[#5b656f]">Payment Status</div>
+              <div className="rounded-2xl glass p-5">
+                <div className="text-[18px] font-semibold text-white">Payment Status</div>
 
                 <div className="mt-2 flex items-center gap-2">
                   {editMode ? (
                     <select
                       value={editStatus}
                       onChange={(e) => setEditStatus(e.target.value as Status)}
-                      className="rounded-xl border border-black/10 px-3 py-2 text-[15px] focus:shadow-md outline-none"
-                    >
-                      <option value="Unpaid">Unpaid</option>
-                      <option value="Partial">Partial</option>
-                      <option value="Paid">Paid</option>
+                      className="rounded-xl px-3 py-2 glass"
+                    >   
+                      <option className="text-black" value="Unpaid">Unpaid</option>
+                      <option className="text-black" value="Partial">Partial</option>
+                      <option className="text-black" value="Paid">Paid</option>
                     </select>
                   ) : (
-                    <div className="text-lg font-extrabold text-[#1d1f21]">{selected.status}</div>
+                    <div className="text-lg font-extrabold text-white">{selected.status}</div>
                   )}
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <MiniRow label="Phone" value="+998 (90) 123-45-67" icon={<Phone className="h-5 w-5 text-[#02437B]" />} />
-              <MiniRow label="Delivery address" value="Tashkent, Yunusobod, Street 12" icon={<MapPin className="h-5 w-5 text-[#02437B]" />} />
-              <MiniRow label="Created" value="Today • 12:30" icon={<Clock className="h-5 w-5 text-[#02437B]" />} />
+            <div className="mt-6 glass rounded-2xl p-4">
+              <div className="flex flex-col space-y-3 lg:flex-row lg:space-y-0 lg:space-x-4">
+                <MiniRow
+                  label="Phone"
+                  value="+998 (90) 123-45-67"
+                  icon={<Phone className="h-5 w-5 text-white" />}
+                />
+                <MiniRow
+                  label="Delivery address"
+                  value="Tashkent, Yunusobod, Street 12"
+                  icon={<MapPin className="h-5 w-5 text-white" />}
+                />
+                <MiniRow
+                  label="Created"
+                  value="Today • 12:30"
+                  icon={<Clock className="h-5 w-5 text-white" />}
+                />
+              </div>
             </div>
 
             <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-black/10 p-5 flex flex-col flex-1 min-h-[260px]">
-            <div className="flex items-center justify-between">
-                  <div className="text-[18px] font-extrabold text-[#5b656f] inline-flex items-center gap-2">
-                    <MessageSquareText className="h-5 w-5" />
-                    Notes & activity
+              <div className="rounded-2xl glass p-5 flex flex-col min-h-[260px]">
+                <div className="text-[18px] font-extrabold text-white">Internal Notes</div>
+                <textarea
+                  value={editNotes}
+                  onChange={(e) => setEditNotes(e.target.value)}
+                  className="mt-2 w-full flex-1 rounded-xl px-4 py-3 glass"
+                  placeholder="Write notes for staff..."
+                />
+              </div>
+
+              <div className="rounded-2xl glass p-5 min-h-[260px]">
+                <div className="text-[18px] font-extrabold text-white mb-4">Order activity</div>
+
+                <div className="space-y-4">
+                  <div className="flex gap-3">
+                    <div className="h-2 w-2 mt-2 rounded-full glass" />
+                    <div>
+                      <div className="text-sm font-bold text-white">Order created</div>
+                      <div className="text-xs text-white">Today • 12:30</div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <div className="h-2 w-2 mt-2 rounded-full bg-amber-300/80" />
+                    <div>
+                      <div className="text-sm font-bold text-white">Payment status changed to Partial</div>
+                      <div className="text-xs text-white">Today • 13:10</div>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-3">
+                    <div className="h-2 w-2 mt-2 rounded-full bg-emerald-300/80" />
+                    <div>
+                      <div className="text-sm font-bold text-white">Order moved to In Progress</div>
+                      <div className="text-xs text-white">Today • 14:00</div>
+                    </div>
                   </div>
                 </div>
-
-                {editMode ? (
-                  <textarea
-                    value={editNotes}
-                    onChange={(e) => setEditNotes(e.target.value)}
-                    className="mt-4 w-full flex-1 min-h-[140px] rounded-2xl border border-black/10 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10"
-                    placeholder="Write internal notes..."
-                  />
-                ) : (
-                  <div className="mt-4 rounded-2xl bg-black/[0.03] border border-black/10 p-4 text-sm text-[#1d1f21]">
-                    {editNotes}
-                  </div>
-                )}
               </div>
+            </div>
+
+            <div className="mt-6 rounded-2xl glass p-5">
+              <div className="text-[16px] font-extrabold text-white mb-3">Order summary</div>
+
+              <div className="grid grid-cols-2 gap-y-2 text-sm">
+                <div className="text-white">Customer</div>
+                <div className="font-bold text-white">{editCustomer || "—"}</div>
+
+                <div className="text-white">Amount</div>
+                <div className="font-bold text-white">{editAmount || "—"}</div>
+
+                <div className="text-white">Payment</div>
+                <div className="font-bold text-white">{editStatus}</div>
+
+                <div className="text-white">Column</div>
+                <div className="font-bold text-white">{editColumn}</div>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <PlaceholderItems />
             </div>
           </div>
         )}
@@ -708,78 +765,72 @@ export default function DragAndDropBoard() {
         title="Create Order"
         onClose={() => setAddOpen(false)}
         footer={
-          <div className="flex justify-end gap-2">
-            <button
-              onClick={() => setAddOpen(false)}
-              className="h-10 px-4 rounded-xl border border-black/10 font-extrabold hover:bg-black/5"
-            >
+          <div className="flex justify-end mx-auto text-white  gap-2">
+            <button onClick={() => setAddOpen(false)} className="h-10 px-4 rounded-xl glass font-extrabold ">
               Cancel
             </button>
-            <button
-              onClick={saveAdd}
-              className="h-10 px-4 rounded-xl bg-[#02437B] text-white font-extrabold hover:opacity-95 inline-flex items-center gap-2"
-            >
+            <button onClick={saveAdd} className="h-10 px-4 rounded-xl glass font-extrabold  inline-flex items-center gap-2">
               <Check className="h-5 w-5" />
               Save Order
             </button>
           </div>
         }
       >
-        <div className="w-full max-w-[980px] mx-auto">
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-black/10 p-5">
-              <div className="text-[18px] font-extrabold text-[#5b656f]">Customer</div>
+        <div className="w-full max-w-[980px] mx-auto glass p-5 rounded-2xl">
+          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="rounded-2xl p-5 glass">
+              <div className="text-[18px] font-extrabold text-white   ">Customer</div>
               <input
                 value={addCustomer}
                 onChange={(e) => setAddCustomer(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10"
+                className="mt-2 w-full glass  rounded-xl px-3 py-2 "
                 placeholder="Customer name"
               />
             </div>
 
-            <div className="rounded-2xl border border-black/10 p-5">
-              <div className="text-[18px] font-extrabold text-[#5b656f]">Amount</div>
+            <div className="rounded-2xl  p-5 glass">
+              <div className="text-[18px] font-extrabold text-white">Amount</div>
               <input
                 value={addAmount}
                 onChange={(e) => setAddAmount(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10"
+                className="mt-2 w-full glass rounded-xl   px-3 py-2 "
                 placeholder="99.99"
               />
             </div>
 
-            <div className="rounded-2xl border border-black/10 p-5">
-              <div className="text-[18px] font-extrabold text-[#5b656f]">Payment Status</div>
+            <div className="rounded-2xl glass p-5">
+              <div className="text-[18px] font-extrabold text-white">Payment Status</div>
               <select
                 value={addStatus}
                 onChange={(e) => setAddStatus(e.target.value as Status)}
-                className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-[15px] outline-none focus:ring-2 focus:ring-black/10"
+                className="mt-2 w-full rounded-xl  px-3 py-2 glass"
               >
-                <option value="Unpaid">Unpaid</option>
-                <option value="Partial">Partial</option>
-                <option value="Paid">Paid</option>
+                <option className="text-black " value="Unpaid">Unpaid</option>
+                <option className="text-black" value="Partial">Partial</option>
+                <option className="text-black" value="Paid">Paid</option>
               </select>
             </div>
 
-            <div className="rounded-2xl border border-black/10 p-5">
-              <div className="text-[18px] font-extrabold text-[#5b656f]">Column Status</div>
+            <div className="rounded-2xl glass p-5">
+              <div className="text-[18px] font-extrabold text-white">Column Status</div>
               <select
                 value={addColumn}
                 onChange={(e) => setAddColumn(e.target.value as ColumnId)}
-                className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black/10"
+                className="mt-2 w-full glass rounded-xl px-3 py-2 "
               >
-                <option value="new">New Orders</option>
-                <option value="progress">In Progress</option>
-                <option value="ready">Ready for Dispatch</option>
-                <option value="delivery">On Delivery</option>
+                <option className="text-black" value="new">New Orders</option>
+                <option className="text-black" value="progress">In Progress</option>
+                <option className="text-black" value="ready">Ready for Dispatch</option>
+                <option className="text-black" value="delivery">On Delivery</option>
               </select>
             </div>
 
-            <div className="rounded-2xl border border-black/10 p-5 md:col-span-2">
-              <div className="text-[18px] font-extrabold text-[#5b656f]">Internal Notes</div>
+            <div className="rounded-2xl glass p-5 md:col-span-2 flex flex-col min-h-[260px]">
+              <div className="text-[18px] font-extrabold text-white">Internal Notes</div>
               <textarea
                 value={addNotes}
                 onChange={(e) => setAddNotes(e.target.value)}
-                className="mt-2 w-full min-h-[120px] rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-black/10"
+                className="mt-2 w-full flex-1 rounded-xl px-4 py-3 glass-field"
                 placeholder="Write notes for staff..."
               />
             </div>

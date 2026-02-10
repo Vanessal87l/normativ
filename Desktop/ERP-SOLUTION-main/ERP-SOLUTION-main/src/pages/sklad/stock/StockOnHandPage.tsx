@@ -44,7 +44,7 @@ export default function StockOnHandPage() {
         <button
           type="button"
           onClick={() => setAddOpen(true)}
-          className="rounded-2xl bg-slate-900 text-white px-4 py-2 text-xs font-extrabold hover:opacity-95"
+          className="rounded-2xl glass text-white px-4 py-2 text-xs font-extrabold hover:opacity-120"
         >
           + Mahsulot qo‘shish
         </button>

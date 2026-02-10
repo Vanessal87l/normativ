@@ -35,22 +35,22 @@ export default function Search({
 }: Props) {
   return (
     <div className={`flex flex-wrap items-center gap-4 ${className}`}>
-      <div className="flex items-center gap-2 h-10 w-[260px] rounded-xl bg-white border border-black/10 px-3  shadow-md">
-        <SearchIcon className="h-4 w-4 text-[#5b656f]" />
+      <div className="flex items-center gap-2 h-10 w-[260px] rounded-xl  border border-white/20 px-3  ">
+        <SearchIcon className="h-4 w-4 text-white" />
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
           placeholder="Search orders..."
-          className="w-full bg-transparent text-sm text-[#1d1f21] outline-none placeholder:text-[#9aa3ad]"
+          className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white"
         />
         {(q?.length ?? 0) > 0 && (
           <button
             type="button"
             onClick={() => setQ("")}
-            className="h-7 w-7 rounded-full hover:bg-black/5 transition inline-flex items-center justify-center"
+            className="h-7 w-7 rounded-full transition inline-flex items-center justify-center"
             aria-label="Clear"
           >
-            <X className="h-4 w-4 text-[#5b656f]" />
+            <X className="h-4 w-4 text-white" />
           </button>
         )}
       </div>
@@ -115,15 +115,14 @@ function StatusFilter({
         className={[
           "group inline-flex items-center gap-2",
           "h-10 px-4 rounded-[13px]",
-          "shadow-md",
-          "bg-white/70 backdrop-blur-[10px]",
-          "text-[15px] font-semibold text-[#5b656f]",
+          "border border-white/20 ",
+          "text-[15px] font-semibold text-white",
           "active:scale-[0.99]",
         ].join(" ")}
       >
         <AnimatedTag open={open} />
         <span>Status</span>
-        <span className="ml-1 text-[#5b656f] font-medium">{currentLabel}</span>
+        <span className="ml-1 text-white font-medium">{currentLabel}</span>
         <Chevron open={open} />
       </button>
 
@@ -168,7 +167,7 @@ function StatusFilter({
                   </div>
 
                   {o.hint && (
-                    <div className={["mt-0.5 text-xs", active ? "text-white/75" : "text-slate-500"].join(" ")}>
+                    <div className={["mt-0.5 text-xs", active ? "text-white/75" : "text-gray-400"].join(" ")}>
                       {o.hint}
                     </div>
                   )}
@@ -177,7 +176,7 @@ function StatusFilter({
             })}
           </div>
 
-          <div className="px-3 pb-2 pt-1 text-[11px] text-[#5b656f]">
+          <div className="px-3 pb-2 pt-1 text-[11px] text-white">
             Tip: press <span className="font-semibold">Esc</span> to close
           </div>
         </div>
@@ -191,7 +190,7 @@ function Chevron({ open }: { open: boolean }) {
   return (
     <svg
       className={[
-        "ml-1 w-4 h-4 text-[#5b656f] transition-transform duration-300",
+        "ml-1 w-4 h-4 text-white transition-transform duration-300",
         open ? "rotate-180" : "rotate-0",
       ].join(" ")}
       viewBox="0 0 20 20"
@@ -278,7 +277,7 @@ function Tick() {
 
 function GhostSparkle() {
   return (
-    <svg className="w-4 h-4 text-[#5b656f]" viewBox="0 0 24 24" fill="none">
+    <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none">
       <path
         d="M12 3l.9 3.4 3.1.9-3.1.9L12 12l-.9-3.9L8 7.3l3.1-.9L12 3Z"
         stroke="currentColor"
@@ -296,7 +295,7 @@ function MiniBadge({ value, active }: { value: StatusValue; active: boolean }) {
       className={[
         "inline-flex items-center justify-center",
         "w-8 h-6 rounded-lg text-xs font-bold",
-        active ? "bg-white/15 text-white" : "bg-black/5 text-slate-700",
+        active ? "glass text-white" : "bg-black/5 text-gray-400",
       ].join(" ")}
     >
       {text}

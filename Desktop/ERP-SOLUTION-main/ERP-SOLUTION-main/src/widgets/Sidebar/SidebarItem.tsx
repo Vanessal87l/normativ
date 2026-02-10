@@ -25,7 +25,7 @@ export default function SidebarItem({
             "transition-all duration-300",
             "hover:translate-x-0.5",
             isCustomActive
-              ? "bg-linear-to-r from-blue-600/10 to-indigo-600/10 ring-1 ring-blue-500/15 shadow-[0_18px_55px_-30px_rgba(37,99,235,0.65)]"
+              ? "bg-linear-to-br from-black via-[#1a140b] to-[#ff9f1c]"
               : "hover:bg-slate-900/5"
           )}
         >
@@ -34,7 +34,7 @@ export default function SidebarItem({
             className={cn(
               "absolute left-0 top-1/2 -translate-y-1/2",
               "h-8 w-1.5 rounded-full",
-              "bg-linear-to-b from-sky-400 to-indigo-600",
+              "bg-linear-to-bl from-black via-[#1a140b] to-[#ff9f1c]",
               "opacity-0",
               isCustomActive && "opacity-100"
             )}
@@ -47,8 +47,8 @@ export default function SidebarItem({
                 "relative w-11 h-11 rounded-2xl flex items-center justify-center",
                 "transition-all duration-300",
                 isCustomActive
-                  ? "bg-blue-600/15 shadow-[0_16px_38px_-22px_rgba(37,99,235,0.75)] ring-1 ring-blue-400/25"
-                  : "bg-white/80 shadow-[0_10px_25px_-18px_rgba(15,23,42,0.25)]"
+                  ? "bg-linear-to-br from-black via-[#1a140b] to-[#ff9f1c]"
+                  : "glass"
               )}
             >
               <div
@@ -56,7 +56,7 @@ export default function SidebarItem({
                   "pointer-events-none absolute inset-0 rounded-2xl blur-xl",
                   "opacity-0",
                   isCustomActive && "opacity-100",
-                  "bg-linear-to-br from-sky-400/30 to-indigo-500/25"
+                  "bg-linear-to-br from-black via-[#1a140b] to-[#ff9f1c]"
                 )}
               />
 
@@ -64,7 +64,7 @@ export default function SidebarItem({
                 size={20}
                 className={cn(
                   "relative transition-colors duration-300",
-                  isCustomActive ? "text-blue-600" : "text-slate-700"
+                  isCustomActive ? "text-white" : "text-gray-400"
                 )}
               />
             </div>
@@ -78,7 +78,7 @@ export default function SidebarItem({
                 "opacity-0 translate-x-2",
                 "group-hover:opacity-100 group-hover:translate-x-0",
                 "transition-all duration-300",
-                isCustomActive ? "text-blue-700" : "text-slate-700"
+                isCustomActive ? "text-white" : "text-slate-700"
               )}
             >
               {item.label}
