@@ -1,0 +1,24 @@
+{
+  "name": "erp-crm-suite",
+  "private": true,
+  "workspaces": [
+    "apps/portal",
+    "apps/erp",
+    "apps/crm"
+  ],
+  "scripts": {
+    "dev": "concurrently -n portal,erp,crm -c auto \"npm -w apps/portal run dev\" \"npm -w apps/erp run dev\" \"npm -w apps/crm run dev\"",
+    "build": "npm -w apps/portal run build && npm -w apps/erp run build && npm -w apps/crm run build",
+    "lint": "npm -w apps/portal run lint && npm -w apps/erp run lint && npm -w apps/crm run lint"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/utilities": "^3.2.2",
+    "@tailwindcss/vite": "^4.1.18",
+    "@tanstack/react-query": "^5.90.21",
+    "tailwindcss": "^4.1.18"
+  }
+}
