@@ -219,7 +219,7 @@ export async function fetchBranches(): Promise<Branch[]> {
 }
 
 export async function fetchWarehouses(branchId?: number): Promise<Warehouse[]> {
-  const { data } = await api.get("/api/v1/dicts/locations/", {
+  const { data } = await api.get("/api/v1/dicts/warehouse-location/", {
     params: branchId ? { branch: branchId } : undefined,
   })
   const rows = unwrapResults<any>(data?.locations ?? data)

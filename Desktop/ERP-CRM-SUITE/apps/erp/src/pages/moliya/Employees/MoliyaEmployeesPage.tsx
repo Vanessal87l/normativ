@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import { financeClient } from "../shared/financeClient"
 import type { Employee, Currency } from "../shared/demoStore"
+import { Eye } from "lucide-react"
+import TableActionIconButton from "@/components/common/TableActionIconButton"
 
 export default function MoliyaEmployeesPage() {
   const [rows, setRows] = useState<Employee[]>([])
@@ -75,9 +77,11 @@ export default function MoliyaEmployeesPage() {
                       {r.baseSalary.toLocaleString("uz-UZ")} {r.currency}
                     </td>
                     <td className="px-4 py-3 text-right">
-                      <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[11px] font-extrabold text-slate-700 hover:bg-slate-50">
-                        Ko‘rish
-                      </button>
+                      <div className="inline-flex items-center justify-end">
+                        <TableActionIconButton title="Ko'rish">
+                          <Eye size={16} />
+                        </TableActionIconButton>
+                      </div>
                     </td>
                   </tr>
                 ))

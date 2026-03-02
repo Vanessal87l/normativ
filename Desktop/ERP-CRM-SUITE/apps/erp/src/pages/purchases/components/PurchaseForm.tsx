@@ -3,17 +3,16 @@ import { useForm } from "react-hook-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import type { PatchPurchasePayload } from "@/Api/purchases.api"
 import type { PurchaseDetail } from "../types"
 
 type FormValues = {
-  organization_id: string
-  kontragent_id: string
-  warehouse_id: string
-  planned_receive_date: string
-  delivery_address: string
-  comment: string
-  vat_enabled: boolean
-  price_includes_vat: boolean
+  supplier: string
+  location: string
+  received_date: string
+  produced_date: string
+  delivery_company: string
+  notes: string
 }
 
 export default function PurchaseForm({
@@ -25,91 +24,90 @@ export default function PurchaseForm({
   value?: PurchaseDetail
   loading: boolean
   saving: boolean
-  onSubmit: (payload: Partial<PurchaseDetail>) => void
+  onSubmit: (payload: PatchPurchasePayload) => void
 }) {
   const { register, reset, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      organization_id: "",
-      kontragent_id: "",
-      warehouse_id: "",
-      planned_receive_date: "",
-      delivery_address: "",
-      comment: "",
-      vat_enabled: true,
-      price_includes_vat: true,
+      supplier: "",
+      location: "",
+      received_date: "",
+      produced_date: "",
+      delivery_company: "",
+      notes: "",
     },
   })
 
   useEffect(() => {
     if (!value) return
     reset({
-      organization_id: value.organization_id ? String(value.organization_id) : "",
-      kontragent_id: value.kontragent_id ? String(value.kontragent_id) : "",
-      warehouse_id: value.warehouse_id ? String(value.warehouse_id) : "",
-      planned_receive_date: value.planned_receive_date || "",
-      delivery_address: value.delivery_address || "",
-      comment: value.comment || "",
-      vat_enabled: value.vat_enabled,
-      price_includes_vat: value.price_includes_vat,
+      supplier: value.supplier ? String(value.supplier) : "",
+      location: value.location ? String(value.location) : "",
+      received_date: value.received_date || "",
+      produced_date: value.produced_date || "",
+      delivery_company: value.delivery_company || "",
+      notes: value.notes || "",
     })
   }, [value, reset])
+
+  const isDraft = value?.status === "DRAFT"
 
   return (
     <form
       className="rounded-2xl border border-slate-200 bg-white p-4"
       onSubmit={handleSubmit((v) => {
-        onSubmit({
-          organization_id: v.organization_id ? Number(v.organization_id) : null,
-          kontragent_id: v.kontragent_id ? Number(v.kontragent_id) : null,
-          warehouse_id: v.warehouse_id ? Number(v.warehouse_id) : null,
-          planned_receive_date: v.planned_receive_date || null,
-          delivery_address: v.delivery_address || null,
-          comment: v.comment || null,
-          vat_enabled: v.vat_enabled,
-          price_includes_vat: v.price_includes_vat,
-        })
+        const payload: PatchPurchasePayload = {
+          supplier: Number(v.supplier),
+          location: Number(v.location),
+          received_date: v.received_date || null,
+          produced_date: v.produced_date || null,
+          delivery_company: v.delivery_company.trim() || null,
+          notes: v.notes.trim() || null,
+          currency: "UZS",
+        }
+        onSubmit(payload)
       })}
     >
-      <div className="text-sm font-semibold text-slate-900">Asosiy ma’lumotlar</div>
+      <div className="text-sm font-semibold text-slate-900">Asosiy ma'lumotlar</div>
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label className="text-xs text-slate-500">Tashkilot (ID)</label>
-          <Input className="mt-1 rounded-xl" disabled={loading} {...register("organization_id")} />
+          <label className="text-xs text-slate-500">Supplier ID *</label>
+          <Input className="mt-1 rounded-xl" disabled={loading || !isDraft} {...register("supplier")} />
         </div>
 
         <div>
-          <label className="text-xs text-slate-500">Kontragent (ID)</label>
-          <Input className="mt-1 rounded-xl" disabled={loading} {...register("kontragent_id")} />
+          <label className="text-xs text-slate-500">Location ID *</label>
+          <Input className="mt-1 rounded-xl" disabled={loading || !isDraft} {...register("location")} />
         </div>
 
         <div>
-          <label className="text-xs text-slate-500">Ombor (ID)</label>
-          <Input className="mt-1 rounded-xl" disabled={loading} {...register("warehouse_id")} />
+          <label className="text-xs text-slate-500">Received date</label>
+          <Input className="mt-1 rounded-xl" type="date" disabled={loading || !isDraft} {...register("received_date")} />
         </div>
 
         <div>
-          <label className="text-xs text-slate-500">Reja sana</label>
-          <Input className="mt-1 rounded-xl" type="date" disabled={loading} {...register("planned_receive_date")} />
+          <label className="text-xs text-slate-500">Produced date</label>
+          <Input className="mt-1 rounded-xl" type="date" disabled={loading || !isDraft} {...register("produced_date")} />
         </div>
 
         <div className="md:col-span-2">
-          <label className="text-xs text-slate-500">Yetkazish manzili</label>
-          <Input className="mt-1 rounded-xl" disabled={loading} {...register("delivery_address")} />
+          <label className="text-xs text-slate-500">Delivery company</label>
+          <Input className="mt-1 rounded-xl" disabled={loading || !isDraft} {...register("delivery_company")} />
         </div>
 
         <div className="md:col-span-2">
-          <label className="text-xs text-slate-500">Komment</label>
-          <Textarea className="mt-1 rounded-xl" rows={4} disabled={loading} {...register("comment")} />
+          <label className="text-xs text-slate-500">Notes</label>
+          <Textarea className="mt-1 rounded-xl" rows={4} disabled={loading || !isDraft} {...register("notes")} />
+        </div>
+
+        <div>
+          <label className="text-xs text-slate-500">Currency</label>
+          <Input className="mt-1 rounded-xl" value="UZS" disabled />
         </div>
       </div>
 
       <div className="mt-4 flex items-center justify-end gap-2">
-        <Button
-          type="submit"
-          className="cursor-pointer rounded-xl"
-          disabled={saving || loading}
-        >
+        <Button type="submit" className="cursor-pointer rounded-xl" disabled={saving || loading || !isDraft}>
           {saving ? "Saqlanmoqda..." : "Saqlash"}
         </Button>
       </div>

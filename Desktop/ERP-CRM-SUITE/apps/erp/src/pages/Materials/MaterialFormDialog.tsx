@@ -37,11 +37,11 @@ type Props = CreateProps | EditProps
 
 export function MaterialFormDialog(props: Props) {
   const [name, setName] = useState("")
-  const [materialType, setMaterialType] = useState("") // material_type
-  const [uom, setUom] = useState<string>("") // uom id
-  const [uomName, setUomName] = useState("") // faqat ko‘rsatish uchun (optional)
-  const [purchasePrice, setPurchasePrice] = useState<string>("") // number
-  const [currency, setCurrency] = useState("UZS")
+  const [materialType, setMaterialType] = useState<string>("")
+  const [uom, setUom] = useState<string>("")
+  const [uomName, setUomName] = useState("")
+  const [description, setDescription] = useState("")
+  const [purchasePrice, setPurchasePrice] = useState<string>("")
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -50,67 +50,74 @@ export function MaterialFormDialog(props: Props) {
 
     if (props.mode === "edit") {
       setName(props.initial.name ?? "")
-      setMaterialType(props.initial.material_type ?? "")
+      setMaterialType(props.initial.material_type ? String(props.initial.material_type) : "")
       setUom(String(props.initial.uom ?? ""))
       setUomName(props.initial.uom_name ?? "")
+      setDescription(props.initial.description ?? "")
       setPurchasePrice(
         props.initial.purchase_price === null || props.initial.purchase_price === undefined
           ? ""
           : String(props.initial.purchase_price)
       )
-      setCurrency(props.initial.currency ?? "UZS")
     } else {
       setName("")
       setMaterialType("")
       setUom("")
       setUomName("")
+      setDescription("")
       setPurchasePrice("")
-      setCurrency("UZS")
     }
   }, [props.open, props.mode, props.mode === "edit" ? props.initial : null])
+
   async function submit() {
     setError(null)
 
-    const mt = materialType == null ? "" : String(materialType)
-    const cur = currency == null ? "" : String(currency)
-
     if (!name.trim()) return setError("Nomi (name) majburiy")
-    if (!uom.trim()) return setError("UOM majburiy (ID kiriting)")
+    if (!materialType.trim()) return setError("Material type ID majburiy")
+    if (!uom.trim()) return setError("UOM majburiy")
 
+    const materialTypeId = Number(materialType)
     const uomId = Number(uom)
-    if (!Number.isFinite(uomId) || uomId <= 0) return setError("UOM noto‘g‘ri. Masalan: 1")
+
+    if (!Number.isFinite(materialTypeId) || materialTypeId <= 0) return setError("Material type ID noto'g'ri")
+    if (!Number.isFinite(uomId) || uomId <= 0) return setError("UOM ID noto'g'ri")
 
     let price: number | undefined
     if (purchasePrice.trim()) {
       const p = Number(purchasePrice)
-      if (!Number.isFinite(p) || p < 0) return setError("Purchase price noto‘g‘ri")
+      if (!Number.isFinite(p) || p < 0) return setError("Purchase price noto'g'ri")
       price = p
     }
 
-    const payload: any = {
-      name: name.trim(),
-      uom: uomId,
+    if (props.mode === "create") {
+      const payload: MaterialCreatePayload = {
+        name: name.trim(),
+        material_type: materialTypeId,
+        uom: uomId,
+        currency: "UZS",
+        description: description.trim() || undefined,
+      }
+      if (price !== undefined) payload.purchase_price = price
+      await props.onSubmit(payload)
+      return
     }
 
-    if (mt.trim()) payload.material_type = mt.trim()
+    const payload: MaterialUpdatePayload = {
+      name: name.trim(),
+      material_type: materialTypeId,
+      uom: uomId,
+      currency: "UZS",
+      description: description.trim() || undefined,
+    }
     if (price !== undefined) payload.purchase_price = price
-    if (cur.trim()) payload.currency = cur.trim()
-
-    console.log("MATERIAL SUBMIT PAYLOAD =>", payload)
-
-    if (props.mode === "create") await props.onSubmit(payload)
-    else await props.onSubmit(payload)
+    await props.onSubmit(payload)
   }
-
-
 
   return (
     <Dialog open={props.open} onOpenChange={(v) => !v && props.onClose()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>
-            {props.mode === "create" ? "Material qo‘shish" : "Materialni tahrirlash"}
-          </DialogTitle>
+          <DialogTitle>{props.mode === "create" ? "Material qo'shish" : "Materialni tahrirlash"}</DialogTitle>
         </DialogHeader>
 
         <div className="space-y-3">
@@ -120,20 +127,24 @@ export function MaterialFormDialog(props: Props) {
           </div>
 
           <div>
-            <div className="text-sm mb-1">Material Type (material_type)</div>
+            <div className="text-sm mb-1">Material Type ID (material_type) *</div>
             <Input
+              type="number"
               value={materialType}
               onChange={(e) => setMaterialType(e.target.value)}
-              placeholder="Masalan: packaging"
+              placeholder="Masalan: 1"
             />
           </div>
 
           <div>
             <div className="text-sm mb-1">UOM ID (uom) *</div>
             <Input type="number" value={uom} onChange={(e) => setUom(e.target.value)} placeholder="Masalan: 2" />
-            {uomName ? (
-              <div className="text-xs text-muted-foreground mt-1">UOM: {uomName}</div>
-            ) : null}
+            {uomName ? <div className="text-xs text-muted-foreground mt-1">UOM: {uomName}</div> : null}
+          </div>
+
+          <div>
+            <div className="text-sm mb-1">Description</div>
+            <Input value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Ixtiyoriy" />
           </div>
 
           <div>
@@ -147,8 +158,8 @@ export function MaterialFormDialog(props: Props) {
           </div>
 
           <div>
-            <div className="text-sm mb-1">Currency (currency)</div>
-            <Input value={currency} onChange={(e) => setCurrency(e.target.value)} placeholder="UZS" />
+            <div className="text-sm mb-1">Currency</div>
+            <Input value="UZS" disabled />
           </div>
 
           {error ? <div className="text-sm text-red-500">{error}</div> : null}

@@ -75,8 +75,7 @@ export default function Form() {
     else if (!emailRegex.test(form.email.trim())) e.email = "Email noto‘g‘ri"
 
     const phoneDigits = form.phone.replace(/\D/g, "")
-    if (!phoneDigits) e.phone = "Telefon majburiy"
-    else if (phoneDigits.length < 12) e.phone = "Telefon to‘liq emas (998...)"
+    if (phoneDigits.length > 0 && phoneDigits.length < 12) e.phone = "Telefon to'liq emas (998...)"
 
     const extraDigits = form.extra_phone.replace(/\D/g, "")
     if (form.extra_phone.trim() && extraDigits.length < 12) {
@@ -115,10 +114,13 @@ export default function Form() {
 
     const payload = {
       name: form.full_name,
-      phone: form.phone.replace(/\D/g, ""),
+      // Employee API bo'yicha phone optional.
+      phone: form.phone.replace(/\D/g, "") || undefined,
       email: form.email || "",
       address: form.branch,
       position: form.role,
+      currency: "UZS",
+      isActive: true,
       salary: undefined,
     }
 
@@ -306,3 +308,4 @@ function selectLuxury() {
     "focus:ring-2 focus:ring-sky-400/30",
   ].join(" ")
 }
+

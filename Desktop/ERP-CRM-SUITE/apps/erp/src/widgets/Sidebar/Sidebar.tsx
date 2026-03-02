@@ -45,7 +45,7 @@ export default function Sidebar({
             <div className="min-w-0 opacity-0 translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
               <div className="font-semibold leading-5 truncate">ERP</div>
               <div className="text-xs text-white/70 truncate">
-                Enterprise Resource Planning
+                
               </div>
             </div>
           </div>
@@ -53,56 +53,55 @@ export default function Sidebar({
       </div>
 
       {/* Menu */}
-      <nav className="px-3 pb-3 flex flex-col gap-2">
-        {sidebarItems.map((it) => (
-          <SidebarItem
-            key={it.to}
-            item={it}
-            onSelect={() => {
-              if (it.to === "/login") {
-                clearAuth()
-                onSectionChange?.(null)
-                return
-              }
+      <div className="hide-scrollbar flex-1 overflow-y-auto px-3 pb-3">
+        <nav className="flex flex-col gap-2">
+          {sidebarItems.map((it) => (
+            <SidebarItem
+              key={it.to}
+              item={it}
+              onSelect={() => {
+                if (it.to === "/login") {
+                  clearAuth()
+                  onSectionChange?.(null)
+                  return
+                }
 
-              if (it.to.startsWith("/dashboard")) {
-                if (it.to === "/dashboard") {
+                if (it.to.startsWith("/dashboard")) {
+                  if (it.to === "/dashboard") {
+                    onSectionChange?.("dashboard")
+                    return
+                  }
+                  if (it.to.startsWith("/dashboard/sklad")) {
+                    onSectionChange?.("sklad")
+                    return
+                  }
+                  if (it.to.startsWith("/dashboard/moliya")) {
+                    onSectionChange?.("moliya")
+                    return
+                  }
+                  if (it.to.startsWith("/dashboard/partners")) {
+                    onSectionChange?.("mijoz")
+                    return
+                  }
                   onSectionChange?.("dashboard")
                   return
                 }
-                if (it.to.startsWith("/dashboard/sklad")) {
-                  onSectionChange?.("sklad")
+
+                if (it.to.startsWith("/sotuv")) {
+                  onSectionChange?.("sotuv")
                   return
                 }
-                if (it.to.startsWith("/dashboard/moliya")) {
-                  onSectionChange?.("moliya")
-                  return
-                }
-                if (it.to.startsWith("/dashboard/partners")) {
+
+                if (it.to.startsWith("/xodimlar")) {
                   onSectionChange?.("mijoz")
                   return
                 }
-                onSectionChange?.("dashboard")
-                return
-              }
-
-              if (it.to.startsWith("/sotuv")) {
-                onSectionChange?.("sotuv")
-                return
-              }
-
-              if (it.to.startsWith("/xodimlar")) {
-                onSectionChange?.("mijoz")
-                return
-              }
-
-              onSectionChange?.(null)
-            }}
-          />
-        ))}
-      </nav>
-
-      <div className="flex-1" />
+                onSectionChange?.(null)
+              }}
+            />
+          ))}
+        </nav>
+      </div>
 
       {/* Bottom user card */}
       {/* <div className="p-3 pt-0">

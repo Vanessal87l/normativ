@@ -283,10 +283,10 @@ export const warehouseApi = {
     return []
   },
 
-  // Warehouse select uchun /dicts/locations/ dan warehouselarni hosil qiladi.
+  // Warehouse select uchun /dicts/warehouse-location/ dan warehouselarni hosil qiladi.
   // location row ichida warehouse maydoni bo'lsa o'shani oladi, bo'lmasa id/name fallback qiladi.
   async listWarehousesFromLocations(): Promise<Array<LookupItem & { default_location_id?: number }>> {
-    const { data } = await api.get("/api/v1/dicts/locations/")
+    const { data } = await api.get("/api/v1/dicts/warehouse-location/")
     const raw = asArray(data?.locations ?? data)
     const mapped = raw
       .map((x: any) => {
@@ -371,10 +371,10 @@ export const warehouseApi = {
   },
 
   // Warehouse tanlanganda location API listini oladi. Endpoint nomlari turli bo'lishi mumkin,
-  // lekin talab bo'yicha aynan /api/v1/dicts/locations/ dan olinadi.
+  // lekin talab bo'yicha aynan /api/v1/dicts/warehouse-location/ dan olinadi.
   async listWarehouseLocations(warehouseId?: number): Promise<LookupItem[]> {
     const params = warehouseId ? { warehouse: warehouseId, warehouse_id: warehouseId } : undefined
-    const { data } = await api.get("/api/v1/dicts/locations/", { params })
+    const { data } = await api.get("/api/v1/dicts/warehouse-location/", { params })
     const rows = asArray(data?.locations ?? data).filter((x: any) => {
       if (!warehouseId) return true
       const w = Number(x?.warehouse ?? x?.warehouse_id ?? x?.warehouseId ?? 0)
@@ -440,7 +440,7 @@ export const warehouseApi = {
       "/api/v1/warehouse/location/",
       "/api/v1/warehouse-locations/",
       "/api/v1/warehouse-location/",
-      "/api/v1/dicts/locations/",
+      "/api/v1/dicts/warehouse-location/",
     ]
     for (const url of candidates) {
       try {

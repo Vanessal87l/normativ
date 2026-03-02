@@ -5,7 +5,11 @@ function Tab(props: { to: string; children: string }) {
     <NavLink
       to={props.to}
       className={({ isActive }) =>
-        `rounded-md px-3 py-2 text-sm border ${isActive ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-200"}`
+        `rounded-md px-3 py-2 text-sm border ${
+          isActive
+            ? "bg-gradient-to-b from-[#0D3B78] to-[#0A4D96] text-white border-[#0A4D96]"
+            : "bg-gradient-to-b from-[#0D3B78] to-[#0A4D96] text-white/90 border-[#0A4D96] opacity-85 hover:opacity-100"
+        }`
       }
     >
       {props.children}
@@ -17,12 +21,13 @@ export default function WarehouseLayout() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        <Tab to="/dashboard/sklad/warehouse/receipts">Prixod</Tab>
+        <Tab to="/dashboard/purchases">Xaridlar</Tab>
         <Tab to="/dashboard/sklad/warehouse/write-offs">Spisaniya</Tab>
         <Tab to="/dashboard/sklad/warehouse/transfers">Peremesheniya</Tab>
         <Tab to="/dashboard/sklad/warehouse/inventories">Inventarizasiya</Tab>
         <Tab to="/dashboard/sklad/warehouse/balances">Ostatki</Tab>
         <Tab to="/dashboard/sklad/warehouse/warehouses">Skladi</Tab>
+        <Tab to="/dashboard/catalog/products">Mahsulot katalogi</Tab>
       </div>
       <Outlet />
     </div>

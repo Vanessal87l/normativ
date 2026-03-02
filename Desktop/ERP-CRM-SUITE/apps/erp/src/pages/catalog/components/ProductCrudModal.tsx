@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import type { Currency, Product } from "../api/ProductsApi"
 import { productsApi } from "../api/ProductsApi"
-import { catalogApi } from "@/pages/Dashboard/api/catalogApi" // sizda bor
+import { catalogApi } from "@/pages/Dashboard/api/catalogApi"
 import type { CatalogCategory, CatalogUom } from "@/pages/Dashboard/api/catalogApi"
 
 function cx(...a: Array<string | false | undefined | null>) {
@@ -43,19 +43,19 @@ export default function ProductCrudModal({
     setUi("loading")
 
     let cancelled = false
-      ; (async () => {
-        try {
-          const [cats, uu] = await Promise.all([catalogApi.listCategories(), catalogApi.listUoms()])
-          if (cancelled) return
-          setCategories(cats)
-          setUoms(uu)
-          setUi("ready")
-        } catch (e: any) {
-          if (cancelled) return
-          setUi("ready")
-          setErr(e?.message || "Dicts yuklashda xatolik (category/uom).")
-        }
-      })()
+    ;(async () => {
+      try {
+        const [cats, uu] = await Promise.all([catalogApi.listCategories(), catalogApi.listUoms()])
+        if (cancelled) return
+        setCategories(cats)
+        setUoms(uu)
+        setUi("ready")
+      } catch (e: any) {
+        if (cancelled) return
+        setUi("ready")
+        setErr(e?.message || "Dicts yuklashda xatolik (category/uom).")
+      }
+    })()
 
     return () => {
       cancelled = true
@@ -69,14 +69,16 @@ export default function ProductCrudModal({
     setName(current.name ?? "")
     setCategoryId(current.category ?? "")
     setUomId(current.uom ?? "")
-    setSellingPrice(String(current.selling_price ?? ""))
+    setSellingPrice(current.selling_price == null ? "" : String(current.selling_price))
     setCurrency((current.currency as Currency) || "UZS")
   }, [open, current])
 
   const canSave = useMemo(() => {
     if (readOnly) return false
+    if (!name.trim() || uomId === "") return false
+    if (!sellingPrice.trim()) return true
     const p = Number(sellingPrice)
-    return name.trim().length > 0 && uomId !== "" && Number.isFinite(p) && p >= 0
+    return Number.isFinite(p) && p >= 0
   }, [name, uomId, sellingPrice, readOnly])
 
   if (!open || !current) return null
@@ -84,7 +86,7 @@ export default function ProductCrudModal({
   async function submit() {
     setErr(null)
 
-    if (!current) return // ✅ TS xato yo‘qoladi
+    if (!current) return
 
     if (mode === "delete") {
       try {
@@ -94,26 +96,31 @@ export default function ProductCrudModal({
         onClose()
       } catch (e: any) {
         setUi("ready")
-        setErr(e?.message || "O‘chirishda xatolik")
+        setErr(e?.message || "O'chirishda xatolik")
       }
       return
     }
 
     if (mode === "edit") {
-      const p = Number(sellingPrice)
       if (!name.trim()) return setErr("Nomi majburiy.")
       if (uomId === "") return setErr("UoM tanlanmagan.")
-      if (!Number.isFinite(p) || p < 0) return setErr("Narx noto‘g‘ri.")
+
+      const payload: any = {
+        name: name.trim(),
+        category: categoryId === "" ? null : Number(categoryId),
+        uom: Number(uomId),
+        currency,
+      }
+
+      if (sellingPrice.trim()) {
+        const p = Number(sellingPrice)
+        if (!Number.isFinite(p) || p < 0) return setErr("Narx noto'g'ri.")
+        payload.selling_price = Math.trunc(p)
+      }
 
       try {
         setUi("loading")
-        await productsApi.patch(current.id, {
-          name: name.trim(),
-          category: categoryId === "" ? null : Number(categoryId),
-          uom: Number(uomId),
-          selling_price: Math.trunc(p),
-          currency,
-        })
+        await productsApi.patch(current.id, payload)
         onChanged?.()
         onClose()
       } catch (e: any) {
@@ -126,13 +133,12 @@ export default function ProductCrudModal({
     }
   }
 
-
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
       <div className="w-full max-w-[720px] rounded-2xl bg-white border border-slate-200 shadow-xl">
         <div className="p-5">
           <div className="text-lg font-extrabold text-slate-900">
-            {mode === "view" ? "Mahsulotni ko‘rish" : mode === "edit" ? "Mahsulotni tahrirlash" : "Mahsulotni o‘chirish"}
+            {mode === "view" ? "Mahsulotni ko'rish" : mode === "edit" ? "Mahsulotni tahrirlash" : "Mahsulotni o'chirish"}
           </div>
 
           {err && (
@@ -141,7 +147,7 @@ export default function ProductCrudModal({
 
           {mode === "delete" ? (
             <div className="mt-4 text-sm text-slate-700">
-              <b>{current.name}</b> mahsulotini o‘chirmoqchimisiz?
+              <b>{current.name}</b> mahsulotini o'chirmoqchimisiz?
             </div>
           ) : (
             <div className="mt-4 grid grid-cols-1 gap-3">
@@ -189,7 +195,7 @@ export default function ProductCrudModal({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <Field label="Sotuv narxi">
+                <Field label="Sotuv narxi (ixtiyoriy)">
                   <input
                     value={sellingPrice}
                     onChange={(e) => setSellingPrice(e.target.value)}
@@ -234,7 +240,7 @@ export default function ProductCrudModal({
                   mode === "delete" ? "bg-rose-600 hover:bg-rose-700" : "bg-slate-900 hover:bg-slate-800"
                 )}
               >
-                {ui === "loading" ? "Kutilmoqda..." : mode === "delete" ? "O‘chirish" : "Saqlash"}
+                {ui === "loading" ? "Kutilmoqda..." : mode === "delete" ? "O'chirish" : "Saqlash"}
               </button>
             )}
           </div>

@@ -2,14 +2,15 @@ import { useForm } from "react-hook-form"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import type { CreatePurchasePayload } from "@/Api/purchases.api"
 
 type FormValues = {
-  organization_id: string
-  kontragent_id: string
-  warehouse_id: string
-  currency: "UZS" | "USD" | "RUB"
-  comment: string
+  supplier: string
+  received_date: string
+  produced_date: string
+  delivery_company: string
+  location: string
+  notes: string
 }
 
 export default function CreatePurchaseModal({
@@ -20,77 +21,79 @@ export default function CreatePurchaseModal({
 }: {
   open: boolean
   onOpenChange: (v: boolean) => void
-  onSubmit: (payload: {
-    organization_id: number | null
-    kontragent_id: number | null
-    warehouse_id: number | null
-    currency: string
-    comment?: string | null
-  }) => void
+  onSubmit: (payload: CreatePurchasePayload) => void
   loading: boolean
 }) {
-  const { register, handleSubmit, setValue, watch } = useForm<FormValues>({
+  const { register, handleSubmit } = useForm<FormValues>({
     defaultValues: {
-      organization_id: "",
-      kontragent_id: "",
-      warehouse_id: "",
-      currency: "UZS",
-      comment: "",
+      supplier: "",
+      received_date: new Date().toISOString().slice(0, 10),
+      produced_date: "",
+      delivery_company: "",
+      location: "",
+      notes: "",
     },
   })
-
-  const currency = watch("currency")
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="rounded-3xl">
         <DialogHeader>
-          <DialogTitle>Yangi xarid</DialogTitle>
+          <DialogTitle>Yangi xarid (DRAFT)</DialogTitle>
         </DialogHeader>
 
         <form
           className="space-y-3"
           onSubmit={handleSubmit((v) => {
+            const supplier = Number(v.supplier)
+            const location = Number(v.location)
+            if (!Number.isFinite(supplier) || supplier <= 0) return
+            if (!Number.isFinite(location) || location <= 0) return
+
             onSubmit({
-              organization_id: v.organization_id ? Number(v.organization_id) : null,
-              kontragent_id: v.kontragent_id ? Number(v.kontragent_id) : null,
-              warehouse_id: v.warehouse_id ? Number(v.warehouse_id) : null,
-              currency: v.currency,
-              comment: v.comment?.trim() ? v.comment.trim() : null,
+              supplier,
+              location,
+              received_date: v.received_date || null,
+              produced_date: v.produced_date || null,
+              delivery_company: v.delivery_company.trim() || null,
+              notes: v.notes.trim() || null,
+              currency: "UZS",
             })
           })}
         >
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <div>
-              <div className="text-xs text-slate-500">Tashkilot (ID)</div>
-              <Input className="rounded-xl" {...register("organization_id")} placeholder="1" />
+              <div className="text-xs text-slate-500">Supplier ID *</div>
+              <Input className="rounded-xl" {...register("supplier")} placeholder="12" />
             </div>
             <div>
-              <div className="text-xs text-slate-500">Kontragent (ID)</div>
-              <Input className="rounded-xl" {...register("kontragent_id")} placeholder="12" />
+              <div className="text-xs text-slate-500">Location ID *</div>
+              <Input className="rounded-xl" {...register("location")} placeholder="3" />
             </div>
+
             <div>
-              <div className="text-xs text-slate-500">Ombor (ID)</div>
-              <Input className="rounded-xl" {...register("warehouse_id")} placeholder="3" />
+              <div className="text-xs text-slate-500">Received date</div>
+              <Input type="date" className="rounded-xl" {...register("received_date")} />
+            </div>
+
+            <div>
+              <div className="text-xs text-slate-500">Produced date</div>
+              <Input type="date" className="rounded-xl" {...register("produced_date")} />
+            </div>
+
+            <div className="md:col-span-2">
+              <div className="text-xs text-slate-500">Delivery company</div>
+              <Input className="rounded-xl" {...register("delivery_company")} placeholder="Fargo" />
+            </div>
+
+            <div className="md:col-span-2">
+              <div className="text-xs text-slate-500">Izoh</div>
+              <Input className="rounded-xl" {...register("notes")} placeholder="Kimyo xomashyo kirimi" />
             </div>
 
             <div>
               <div className="text-xs text-slate-500">Valyuta</div>
-              <Select value={currency} onValueChange={(v) => setValue("currency", v as any)}>
-                <SelectTrigger className="rounded-xl">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="UZS">UZS</SelectItem>
-                  <SelectItem value="USD">USD</SelectItem>
-                  <SelectItem value="RUB">RUB</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="md:col-span-2">
-              <div className="text-xs text-slate-500">Komment</div>
-              <Input className="rounded-xl" {...register("comment")} placeholder="Izoh..." />
+              <Input className="rounded-xl" value="UZS" disabled />
             </div>
           </div>
 
@@ -103,12 +106,7 @@ export default function CreatePurchaseModal({
             >
               Bekor
             </Button>
-
-            <Button
-              type="submit"
-              className="cursor-pointer rounded-2xl"
-              disabled={loading}
-            >
+            <Button type="submit" className="cursor-pointer rounded-2xl" disabled={loading}>
               {loading ? "Yaratilmoqda..." : "Yaratish"}
             </Button>
           </div>

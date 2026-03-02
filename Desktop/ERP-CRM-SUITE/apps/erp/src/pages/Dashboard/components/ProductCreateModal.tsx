@@ -21,16 +21,12 @@ export default function ProductCreateModal({
   const [categories, setCategories] = useState<CatalogCategory[]>([])
   const [uoms, setUoms] = useState<CatalogUom[]>([])
 
-  // form
   const [name, setName] = useState("")
   const [categoryId, setCategoryId] = useState<number | "">("")
   const [uomId, setUomId] = useState<number | "">("")
-  const [sellingPrice, setSellingPrice] = useState("19000")
+  const [sellingPrice, setSellingPrice] = useState("")
   const [currency, setCurrency] = useState<"UZS" | "USD" | "RUB">("UZS")
-  // const [status, setStatus] = useState<"VALID" | "INVALID">("VALID")
 
-
-  // ✅ modal ochilganda: errorlarni tozalash
   useEffect(() => {
     if (!open) return
     setErr(null)
@@ -38,8 +34,11 @@ export default function ProductCreateModal({
   }, [open])
 
   const canSave = useMemo(() => {
+    if (!name.trim()) return false
+    if (uomId === "") return false
+    if (!sellingPrice.trim()) return true
     const p = Number(sellingPrice)
-    return name.trim().length > 0 && uomId !== "" && Number.isFinite(p) && p >= 0
+    return Number.isFinite(p) && p >= 0
   }, [name, uomId, sellingPrice])
 
   useEffect(() => {
@@ -57,7 +56,6 @@ export default function ProductCreateModal({
         setCategories(cats)
         setUoms(uu)
 
-        // ✅ default select
         setCategoryId((prev) => (prev === "" && cats.length ? cats[0].id : prev))
         setUomId((prev) => (prev === "" && uu.length ? uu[0].id : prev))
 
@@ -65,7 +63,7 @@ export default function ProductCreateModal({
       } catch (e: any) {
         if (cancelled) return
         setUi("error")
-        setErr(e?.message || "Category/UoM yuklashda xatolik. Swaggerdan endpoint path’larini tekshir.")
+        setErr(e?.message || "Category/UoM yuklashda xatolik")
       }
     }
 
@@ -78,31 +76,34 @@ export default function ProductCreateModal({
   async function save() {
     setErr(null)
 
-    const p = Number(sellingPrice)
     if (!name.trim()) return setErr("Mahsulot nomi majburiy.")
-    if (uoms.length === 0) return setErr("UoM topilmadi. UoM endpoint path noto‘g‘ri bo‘lishi mumkin.")
-    if (uomId === "") return setErr("O‘lchov birligini tanlang.")
-    if (!Number.isFinite(p) || p < 0) return setErr("Narx noto‘g‘ri.")
+    if (uoms.length === 0) return setErr("UoM topilmadi.")
+    if (uomId === "") return setErr("O'lchov birligini tanlang.")
+
+    const payload: any = {
+      name: name.trim(),
+      category: categoryId === "" ? null : Number(categoryId),
+      uom: Number(uomId),
+      currency,
+    }
+
+    if (sellingPrice.trim()) {
+      const p = Number(sellingPrice)
+      if (!Number.isFinite(p) || p < 0) return setErr("Narx noto'g'ri.")
+      payload.selling_price = Math.trunc(p)
+    }
 
     try {
       setUi("loading")
-
-      await catalogApi.createProduct({
-        name: name.trim(),
-        category: categoryId === "" ? null : Number(categoryId),
-        uom: Number(uomId),
-        selling_price: Math.trunc(p),
-        currency,
-      })
+      await catalogApi.createProduct(payload)
 
       onCreated?.()
       onClose()
 
-      // reset
       setName("")
       setCategoryId("")
       setUomId("")
-      setSellingPrice("19000")
+      setSellingPrice("")
       setCurrency("UZS")
       setErr(null)
       setUi("idle")
@@ -118,10 +119,7 @@ export default function ProductCreateModal({
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
       <div className="w-full max-w-[620px] rounded-2xl bg-white border border-slate-200 shadow-xl">
         <div className="p-5">
-          <div className="text-lg font-extrabold text-slate-900">Mahsulot qo‘shish</div>
-          {/* <div className="mt-1 text-xs font-semibold text-slate-500">
-            Swagger: <span className="font-bold">POST /api/v1/catalog/products/</span>
-          </div> */}
+          <div className="text-lg font-extrabold text-slate-900">Mahsulot qo'shish</div>
 
           {err && (
             <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</div>
@@ -155,7 +153,7 @@ export default function ProductCreateModal({
                 </select>
               </Field>
 
-              <Field label="O‘lchov birligi (UoM) *">
+              <Field label="O'lchov birligi (UoM) *">
                 <select
                   value={uomId === "" ? "" : String(uomId)}
                   onChange={(e) => setUomId(e.target.value ? Number(e.target.value) : "")}
@@ -176,7 +174,7 @@ export default function ProductCreateModal({
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <Field label="Sotuv narxi">
+              <Field label="Sotuv narxi (ixtiyoriy)">
                 <input
                   value={sellingPrice}
                   onChange={(e) => setSellingPrice(e.target.value)}
@@ -198,18 +196,6 @@ export default function ProductCreateModal({
                   <option value="RUB">RUB</option>
                 </select>
               </Field>
-              {/* <Field label="Status">
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value as any)}
-                  className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none"
-                  disabled={ui === "loading"}
-                >
-                  <option value="VALID">Yaroqli</option>
-                  <option value="INVALID">Yaroqsiz</option>
-                </select>
-              </Field> */}
-
             </div>
           </div>
 

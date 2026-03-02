@@ -13,7 +13,7 @@ import { NavLink, Outlet } from "react-router-dom"
  */
 export default function MoliyaLayout() {
   return (
-    <div className="rounded-2xl bg-white border border-slate-200 p-4 md:p-5 shadow-sm">
+    <div className="moliya-scope rounded-2xl bg-white border border-slate-200 p-4 md:p-5 shadow-sm">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="text-lg font-extrabold text-slate-900">Moliya</div>
@@ -43,8 +43,8 @@ function Tab({ to, children }: { to: string; children: React.ReactNode }) {
         [
           "px-4 py-2 rounded-xl text-sm font-bold transition",
           isActive
-            ? "bg-slate-900 text-white"
-            : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-100",
+            ? "bg-gradient-to-b from-[#0D3B78] to-[#0A4D96] text-white border border-[#0A4D96]"
+            : "bg-gradient-to-b from-[#0D3B78] to-[#0A4D96] text-white/90 border border-[#0A4D96] opacity-85 hover:opacity-100",
         ].join(" ")
       }
     >

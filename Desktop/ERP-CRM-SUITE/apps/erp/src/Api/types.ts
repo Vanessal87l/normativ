@@ -17,6 +17,8 @@ export type BaseEntity = {
 export type Employee = BaseEntity & {
   position: string;
   salary?: number;
+  // Employee maoshi valyutasi (backend: currency)
+  currency?: "UZS" | "USD" | "EUR" | "RUB" | string;
 };
 
 export type Client = BaseEntity & {

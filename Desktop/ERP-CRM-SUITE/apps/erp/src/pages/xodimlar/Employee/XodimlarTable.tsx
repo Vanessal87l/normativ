@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/table"
 
 import { MoreHorizontalIcon } from "lucide-react"
+import DeleteAlertDialog from "@/components/common/DeleteAlertDialog"
 
 import {
   Dialog,
@@ -57,6 +58,9 @@ const emptyFiltersUI = {
   clientName: "",
   inn: "",
   kind: "",
+  isActive: "ALL",
+  createdFrom: "",
+  createdTo: "",
   phoneNumber: "",
   email: "",
   address: "",
@@ -68,11 +72,17 @@ const XodimlarTable = () => {
   const [error, setError] = useState("")
 
   const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
+  const [pageSize] = useState(20)
+  const [total, setTotal] = useState(0)
   const [filterOpen, setFilterOpen] = useState(false)
   const [filtersUI, setFiltersUI] = useState(emptyFiltersUI)
   const [draftUI, setDraftUI] = useState(emptyFiltersUI)
   const [editOpen, setEditOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
+  const [editLoading, setEditLoading] = useState(false)
   const [deletingId, setDeletingId] = useState<string | null>(null)
   const [editRow, setEditRow] = useState<ClientRow | null>(null)
   const [editForm, setEditForm] = useState({
@@ -83,12 +93,23 @@ const XodimlarTable = () => {
     notes: "",
   })
 
-  const load = async () => {
+  const load = async (targetPage = page, activeFilters = filtersUI) => {
     try {
       setLoading(true)
       setError("")
-      const list = await apiAxios.list("client")
-      const mapped = (list as Client[]).map((x) => ({
+      const backend = await apiAxios.listClientsPage({
+        page: targetPage,
+        page_size: pageSize,
+        is_active:
+          activeFilters.isActive === "true"
+            ? true
+            : activeFilters.isActive === "false"
+              ? false
+              : undefined,
+        created_from: activeFilters.createdFrom || undefined,
+        created_to: activeFilters.createdTo || undefined,
+      })
+      const mapped = (backend.items as Client[]).map((x) => ({
         id: String(x.id),
         code: String(x.code || ""),
         clientName: String(x.name || "-"),
@@ -102,8 +123,11 @@ const XodimlarTable = () => {
         deletedAt: x.deletedAt ?? null,
       }))
       setRows(mapped)
+      setTotal(Number(backend.total || 0))
+      setPage(targetPage)
     } catch (e: any) {
       setRows([])
+      setTotal(0)
       setError(String(e?.response?.data?.detail || e?.message || "Clientlar yuklanmadi"))
     } finally {
       setLoading(false)
@@ -111,11 +135,11 @@ const XodimlarTable = () => {
   }
 
   useEffect(() => {
-    load()
-  }, [])
+    load(page, filtersUI)
+  }, [page])
 
   const hasAnyFilter = useMemo(() => {
-    return Object.values(filtersUI).some((v) => String(v).trim().length > 0)
+    return Object.entries(filtersUI).some(([k, v]) => String(v) !== String((emptyFiltersUI as Record<string, string>)[k]))
   }, [filtersUI])
 
   const openFilter = () => {
@@ -125,12 +149,15 @@ const XodimlarTable = () => {
 
   const applyFilters = () => {
     setFiltersUI(draftUI)
+    load(1, draftUI)
     setFilterOpen(false)
   }
 
   const resetFilters = () => {
-    setDraftUI(emptyFiltersUI)
-    setFiltersUI(emptyFiltersUI)
+    const x = { ...emptyFiltersUI }
+    setDraftUI(x)
+    setFiltersUI(x)
+    load(1, x)
   }
 
   const filteredRows = useMemo(() => {
@@ -159,16 +186,37 @@ const XodimlarTable = () => {
     })
   }, [rows, search, filtersUI])
 
-  const openEdit = (row: ClientRow) => {
-    setEditRow(row)
-    setEditForm({
-      clientName: row.clientName,
-      inn: row.inn,
-      phoneNumber: row.phoneNumber,
-      address: row.address,
-      notes: row.notes,
-    })
-    setEditOpen(true)
+  const openEdit = async (row: ClientRow) => {
+    try {
+      setEditLoading(true)
+      const d = await apiAxios.detail("client", row.id)
+      const enriched: ClientRow = {
+        id: String(d.id),
+        code: String(d.code || ""),
+        clientName: String(d.name || "-"),
+        inn: String(d.taxId || ""),
+        kind: String(d.kind || "CLIENT"),
+        phoneNumber: String(d.phone || ""),
+        email: String(d.email || ""),
+        address: String(d.address || ""),
+        notes: String(d.notes || d.company || ""),
+        isActive: Boolean(d.isActive ?? true),
+        deletedAt: d.deletedAt ?? null,
+      }
+      setEditRow(enriched)
+      setEditForm({
+        clientName: enriched.clientName,
+        inn: enriched.inn,
+        phoneNumber: enriched.phoneNumber,
+        address: enriched.address,
+        notes: enriched.notes,
+      })
+      setEditOpen(true)
+    } catch (e: any) {
+      toast.error(String(e?.response?.data?.detail || e?.message || "Client detail yuklanmadi"))
+    } finally {
+      setEditLoading(false)
+    }
   }
 
   const submitEdit = async () => {
@@ -208,24 +256,30 @@ const XodimlarTable = () => {
     }
   }
 
+  const requestDeleteClient = (id: string) => {
+    setDeleteTargetId(id)
+    setDeleteOpen(true)
+  }
+
   const removeClient = async (id: string) => {
-    if (!window.confirm("Clientni o'chirasizmi?")) return
     try {
       setDeletingId(id)
       await apiAxios.remove("client", id)
-      setRows((prev) => prev.filter((x) => x.id !== id))
+      await load(page, filtersUI)
       toast.success("Client o'chirildi")
     } catch (e: any) {
       toast.error(String(e?.response?.data?.detail || e?.message || "O'chirishda xatolik"))
     } finally {
       setDeletingId(null)
+      setDeleteOpen(false)
+      setDeleteTargetId(null)
     }
   }
 
   const restoreClient = async (id: string) => {
     try {
       await apiAxios.restore("client", id)
-      await load()
+      await load(page, filtersUI)
       toast.success("Client restore qilindi")
     } catch (e: any) {
       toast.error(String(e?.response?.data?.detail || e?.message || "Restore xatolik"))
@@ -236,7 +290,7 @@ const XodimlarTable = () => {
     try {
       if (nextActive) await apiAxios.activate("client", row.id)
       else await apiAxios.deactivate("client", row.id)
-      await load()
+      await load(page, filtersUI)
       toast.success(nextActive ? "Client aktiv qilindi" : "Client noaktiv qilindi")
     } catch (e: any) {
       toast.error(String(e?.response?.data?.detail || e?.message || "Status o'zgartirish xatolik"))
@@ -281,6 +335,17 @@ const XodimlarTable = () => {
                 <Input placeholder="Client Name" value={draftUI.clientName} onChange={(e) => setDraftUI((p) => ({ ...p, clientName: e.target.value }))} />
                 <Input placeholder="INN" value={draftUI.inn} onChange={(e) => setDraftUI((p) => ({ ...p, inn: e.target.value }))} />
                 <Input placeholder="Kind" value={draftUI.kind} onChange={(e) => setDraftUI((p) => ({ ...p, kind: e.target.value }))} />
+                <Input type="date" placeholder="Created from" value={draftUI.createdFrom} onChange={(e) => setDraftUI((p) => ({ ...p, createdFrom: e.target.value }))} />
+                <Input type="date" placeholder="Created to" value={draftUI.createdTo} onChange={(e) => setDraftUI((p) => ({ ...p, createdTo: e.target.value }))} />
+                <select
+                  className="h-10 rounded-xl border border-input bg-background px-3 text-sm"
+                  value={draftUI.isActive}
+                  onChange={(e) => setDraftUI((p) => ({ ...p, isActive: e.target.value }))}
+                >
+                  <option value="ALL">Status: Barchasi</option>
+                  <option value="true">Faqat aktiv</option>
+                  <option value="false">Faqat noaktiv/deleted</option>
+                </select>
                 <Input placeholder="Phone" value={draftUI.phoneNumber} onChange={(e) => setDraftUI((p) => ({ ...p, phoneNumber: e.target.value }))} />
                 <Input placeholder="Email" value={draftUI.email} onChange={(e) => setDraftUI((p) => ({ ...p, email: e.target.value }))} />
                 <Input placeholder="Address" value={draftUI.address} onChange={(e) => setDraftUI((p) => ({ ...p, address: e.target.value }))} />
@@ -295,7 +360,7 @@ const XodimlarTable = () => {
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button variant="outline" onClick={load} disabled={loading}>
+          <Button variant="outline" onClick={() => load(page, filtersUI)} disabled={loading}>
             {loading ? "Yuklanmoqda..." : "Yangilash"}
           </Button>
         </div>
@@ -314,7 +379,7 @@ const XodimlarTable = () => {
       <div className="px-4 mt-4">
         {error ? <div className="text-sm text-rose-600 pb-2">{error}</div> : null}
         <div className="text-sm text-gray-500 pb-2">
-          {`${filteredRows.length} ta mijoz topildi`}
+          {`${filteredRows.length} ta (sahifadagi) / jami ${total} ta mijoz`}
         </div>
 
         <Table>
@@ -365,7 +430,9 @@ const XodimlarTable = () => {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem onClick={() => openEdit(r)}>Edit</DropdownMenuItem>
+                        <DropdownMenuItem onClick={() => openEdit(r)} disabled={editLoading}>
+                          {editLoading ? "Yuklanmoqda..." : "Edit"}
+                        </DropdownMenuItem>
                         {r.deletedAt ? (
                           <DropdownMenuItem onClick={() => restoreClient(r.id)}>Restore</DropdownMenuItem>
                         ) : null}
@@ -377,7 +444,7 @@ const XodimlarTable = () => {
                         <DropdownMenuSeparator />
                         <DropdownMenuItem
                           variant="destructive"
-                          onClick={() => removeClient(r.id)}
+                          onClick={() => requestDeleteClient(r.id)}
                           disabled={deletingId === r.id}
                         >
                           {deletingId === r.id ? "Deleting..." : "Delete"}
@@ -390,7 +457,41 @@ const XodimlarTable = () => {
             )}
           </TableBody>
         </Table>
+
+        <div className="mt-4 flex items-center justify-end gap-2">
+          <Button
+            variant="outline"
+            disabled={loading || page <= 1}
+            onClick={() => load(page - 1, filtersUI)}
+          >
+            Oldingi
+          </Button>
+          <div className="text-sm text-muted-foreground">
+            {page} / {Math.max(1, Math.ceil((total || 0) / pageSize))}
+          </div>
+          <Button
+            variant="outline"
+            disabled={loading || page >= Math.max(1, Math.ceil((total || 0) / pageSize))}
+            onClick={() => load(page + 1, filtersUI)}
+          >
+            Keyingi
+          </Button>
+        </div>
       </div>
+
+      <DeleteAlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          setDeleteOpen(open)
+          if (!open) setDeleteTargetId(null)
+        }}
+        title="O'chirish"
+        description="Rostdan ham ushbu clientni o'chirmoqchimisiz?"
+        loading={!!deletingId}
+        onConfirm={() => {
+          if (deleteTargetId) void removeClient(deleteTargetId)
+        }}
+      />
 
       <Dialog open={editOpen} onOpenChange={setEditOpen}>
         <DialogContent className="bg-white max-w-[640px]">

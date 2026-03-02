@@ -6,6 +6,10 @@ import { EmployeeForm } from "../../pages/xodimlar/Employee/EmployeeForm";
 import { ClientForm } from "../../pages/xodimlar/Client/ClientForm";
 import { SupplierForm } from "../../pages/xodimlar/Supplier/SupplierForm";
 import { toast } from "react-toastify";
+import DeleteAlertDialog from "@/components/common/DeleteAlertDialog";
+import { Button } from "@/components/ui/button";
+import { Eye, Pencil, Trash2 } from "lucide-react";
+import TableActionIconButton from "@/components/common/TableActionIconButton";
 
 /** =========================
  *  Config
@@ -170,12 +174,16 @@ function DataTable<T extends { id: string }>({
   onView,
   onEdit,
   onDelete,
+  onRestore,
+  onToggleActive,
 }: {
   columns: ColumnDef<T>[];
   rows: T[];
   onView: (id: string) => void;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
+  onRestore?: (id: string) => void;
+  onToggleActive?: (id: string, nextActive: boolean) => void;
 }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
@@ -202,33 +210,42 @@ function DataTable<T extends { id: string }>({
               <tr key={row.id} className="border-b border-slate-100 hover:bg-slate-50/60">
                 {columns.map((c) => {
                   if (c.key === "actions") {
+                    const anyRow = row as any;
+                    const isActive = typeof anyRow?.isActive === "boolean" ? anyRow.isActive : undefined;
+                    const deletedAt = anyRow?.deletedAt as string | null | undefined;
+
                     return (
                       <td key="actions" className="px-3 py-3">
                         <div className="flex items-center gap-2">
-                          <button
-                            type="button"
-                            onClick={() => onView(row.id)}
-                            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-100"
-                            title="View"
-                          >
-                            👁️
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onEdit(row.id)}
-                            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-100"
-                            title="Edit"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => onDelete(row.id)}
-                            className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700 hover:bg-rose-100"
-                            title="Delete"
-                          >
-                            🗑️
-                          </button>
+                          <TableActionIconButton title="View" onClick={() => onView(row.id)}>
+                            <Eye size={16} />
+                          </TableActionIconButton>
+                          <TableActionIconButton title="Edit" onClick={() => onEdit(row.id)}>
+                            <Pencil size={16} />
+                          </TableActionIconButton>
+                          <TableActionIconButton title="Delete" danger onClick={() => onDelete(row.id)}>
+                            <Trash2 size={16} />
+                          </TableActionIconButton>
+                          {deletedAt && onRestore ? (
+                            <button
+                              type="button"
+                              onClick={() => onRestore(row.id)}
+                              className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 hover:bg-emerald-100"
+                              title="Restore"
+                            >
+                              Restore
+                            </button>
+                          ) : null}
+                          {!deletedAt && typeof isActive === "boolean" && onToggleActive ? (
+                            <button
+                              type="button"
+                              onClick={() => onToggleActive(row.id, !isActive)}
+                              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-100"
+                              title="Toggle Active"
+                            >
+                              {isActive ? "Deactivate" : "Activate"}
+                            </button>
+                          ) : null}
                         </div>
                       </td>
                     );
@@ -249,7 +266,6 @@ function DataTable<T extends { id: string }>({
     </div>
   );
 }
-
 /** =========================
  *  Main Component
  *  ========================= */
@@ -264,7 +280,10 @@ export default function TabsCrud() {
           { key: "name", title: "Name" },
           { key: "position", title: "Position" },
           { key: "phone", title: "Phone" },
-          { key: "email", title: "Email" },
+          { key: "salary", title: "Base Salary" },
+          { key: "currency", title: "Currency" },
+          { key: "isActive", title: "Active", render: (r) => (r.isActive ? "true" : "false") },
+          { key: "deletedAt", title: "Deleted At", render: (r) => (r.deletedAt || "-") },
           { key: "createdAt", title: "Created", render: (r) => formatDate(r.createdAt) },
           { key: "actions", title: "Actions" },
         ],
@@ -318,12 +337,12 @@ export default function TabsCrud() {
 
     (async () => {
       try {
-        const [e, c, s] = await Promise.all([
-          apiAxios.list("employee").catch(() => []),
+        // Employee ro'yxati alohida server-side pagination bilan yuklanadi.
+        const [c, s] = await Promise.all([
           apiAxios.list("client").catch(() => []),
           apiAxios.list("supplier").catch(() => []),
         ]);
-        setStore({ employee: e, client: c, supplier: s });
+        setStore((p) => ({ ...p, client: c, supplier: s }));
       } catch (err) {
         console.error(err);
         alert("API list error. Console-ni tekshiring.");
@@ -336,10 +355,32 @@ export default function TabsCrud() {
   const [query, setQuery] = useState("");
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [employeeStatus, setEmployeeStatus] = useState<"ALL" | "true" | "false">("ALL");
+  const [employeeTotal, setEmployeeTotal] = useState(0);
 
   useEffect(() => {
     setPage(1);
   }, [activeTab, query]);
+
+  useEffect(() => {
+    if (!USE_API || activeTab !== "employee") return;
+
+    (async () => {
+      try {
+        const res = await apiAxios.listEmployeesPage({
+          page,
+          page_size: pageSize,
+          search: query || undefined,
+          ordering: "-created_at",
+          is_active: employeeStatus === "ALL" ? undefined : employeeStatus === "true",
+        });
+        setStore((p) => ({ ...p, employee: res.items }));
+        setEmployeeTotal(res.total);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [activeTab, page, pageSize, query, employeeStatus]);
 
   const rows = store[activeTab] as EntityMap[typeof activeTab][];
 
@@ -356,16 +397,21 @@ export default function TabsCrud() {
     });
   }, [rows, query]);
 
-  const total = filtered.length;
+  const total = activeTab === "employee" ? employeeTotal : filtered.length;
   const paged = useMemo(() => {
+    if (activeTab === "employee") return rows;
     const start = (page - 1) * pageSize;
     return filtered.slice(start, start + pageSize);
-  }, [filtered, page, pageSize]);
+  }, [activeTab, filtered, page, pageSize, rows]);
 
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [mode, setMode] = useState<Mode>("create");
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Delete confirm dialog (shadcn) holati.
+  const [deleteOpen, setDeleteOpen] = useState(false);
+  const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const selectedRow = useMemo(() => {
     if (!selectedId) return null;
@@ -377,12 +423,35 @@ export default function TabsCrud() {
     setSelectedId(null);
     setModalOpen(true);
   }
-  function openView(id: string) {
+  async function openView(id: string) {
+    if (USE_API && activeTab === "employee") {
+      try {
+        // Detail endpointdan eng so'nggi employee ma'lumotini olib modalga beramiz.
+        const detail = await apiAxios.detail("employee", id);
+        setStore((p) => ({
+          ...p,
+          employee: (p.employee as any[]).map((x) => (x.id === id ? detail : x)),
+        }));
+      } catch (e: any) {
+        toast.error(String(e?.response?.data?.detail || e?.message || "Employee detail xatolik"));
+      }
+    }
     setMode("view");
     setSelectedId(id);
     setModalOpen(true);
   }
-  function openEdit(id: string) {
+  async function openEdit(id: string) {
+    if (USE_API && activeTab === "employee") {
+      try {
+        const detail = await apiAxios.detail("employee", id);
+        setStore((p) => ({
+          ...p,
+          employee: (p.employee as any[]).map((x) => (x.id === id ? detail : x)),
+        }));
+      } catch (e: any) {
+        toast.error(String(e?.response?.data?.detail || e?.message || "Employee detail xatolik"));
+      }
+    }
     setMode("edit");
     setSelectedId(id);
     setModalOpen(true);
@@ -420,13 +489,75 @@ export default function TabsCrud() {
     }));
   }
 
-  async function removeRow(id: string) {
-    if (!confirm("Delete?")) return;
+  function requestDeleteRow(id: string) {
+    setDeleteTargetId(id);
+    setDeleteOpen(true);
+  }
 
-    if (USE_API) {
-      await apiAxios.remove(activeTab as any, id);
+  async function removeRow(id: string) {
+    try {
+      setDeleting(true);
+      if (USE_API) {
+        await apiAxios.remove(activeTab as any, id);
+        if (activeTab === "employee") {
+          const res = await apiAxios.listEmployeesPage({
+            page,
+            page_size: pageSize,
+            search: query || undefined,
+            ordering: "-created_at",
+            is_active: employeeStatus === "ALL" ? undefined : employeeStatus === "true",
+          });
+          setStore((p) => ({ ...p, employee: res.items }));
+          setEmployeeTotal(res.total);
+        } else {
+          setStore((p) => ({ ...p, [activeTab]: (p[activeTab] as any[]).filter((x) => x.id !== id) }));
+        }
+      } else {
+        setStore((p) => ({ ...p, [activeTab]: (p[activeTab] as any[]).filter((x) => x.id !== id) }));
+      }
+      toast.success("O'chirildi");
+    } catch (e: any) {
+      const data = e?.response?.data;
+      const msg = typeof data === "string" ? data : data?.detail || e?.message || "Delete xatolik";
+      toast.error(String(msg));
+    } finally {
+      setDeleting(false);
+      setDeleteOpen(false);
+      setDeleteTargetId(null);
     }
-    setStore((p) => ({ ...p, [activeTab]: (p[activeTab] as any[]).filter((x) => x.id !== id) }));
+  }
+
+  async function restoreRow(id: string) {
+    if (!USE_API) return;
+    await apiAxios.restore(activeTab as any, id);
+    if (activeTab === "employee") {
+      const res = await apiAxios.listEmployeesPage({
+        page,
+        page_size: pageSize,
+        search: query || undefined,
+        ordering: "-created_at",
+        is_active: employeeStatus === "ALL" ? undefined : employeeStatus === "true",
+      });
+      setStore((p) => ({ ...p, employee: res.items }));
+      setEmployeeTotal(res.total);
+    }
+  }
+
+  async function toggleActiveRow(id: string, nextActive: boolean) {
+    if (!USE_API) return;
+    if (nextActive) await apiAxios.activate(activeTab as any, id);
+    else await apiAxios.deactivate(activeTab as any, id);
+    if (activeTab === "employee") {
+      const res = await apiAxios.listEmployeesPage({
+        page,
+        page_size: pageSize,
+        search: query || undefined,
+        ordering: "-created_at",
+        is_active: employeeStatus === "ALL" ? undefined : employeeStatus === "true",
+      });
+      setStore((p) => ({ ...p, employee: res.items }));
+      setEmployeeTotal(res.total);
+    }
   }
 
   const formNode = useMemo(() => {
@@ -519,6 +650,20 @@ export default function TabsCrud() {
             placeholder="Search..."
             className="w-[320px] max-w-[78vw] rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900"
           />
+          {activeTab === "employee" ? (
+            <select
+              value={employeeStatus}
+              onChange={(e) => {
+                setEmployeeStatus(e.target.value as "ALL" | "true" | "false");
+                setPage(1);
+              }}
+              className="w-[220px] rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm outline-none focus:border-slate-900"
+            >
+              <option value="ALL">Status: barchasi</option>
+              <option value="true">Faqat aktiv</option>
+              <option value="false">Faqat noaktiv</option>
+            </select>
+          ) : null}
           <div className="text-xs text-slate-600">
             Items: <span className="font-bold text-slate-900">{total}</span>
           </div>
@@ -534,7 +679,15 @@ export default function TabsCrud() {
       </div>
 
       {/* Table */}
-      <DataTable columns={tabDef.columns as any} rows={paged as any} onView={openView} onEdit={openEdit} onDelete={removeRow} />
+      <DataTable
+        columns={tabDef.columns as any}
+        rows={paged as any}
+        onView={openView}
+        onEdit={openEdit}
+        onDelete={requestDeleteRow}
+        onRestore={restoreRow}
+        onToggleActive={toggleActiveRow}
+      />
 
       {/* Pagination */}
       <Pagination
@@ -567,6 +720,21 @@ export default function TabsCrud() {
       >
         {formNode}
       </Modal>
+
+      <DeleteAlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          setDeleteOpen(open);
+          if (!open) setDeleteTargetId(null);
+        }}
+        title="O'chirish"
+        description="Rostdan ham tanlangan yozuvni o'chirmoqchimisiz?"
+        loading={deleting}
+        onConfirm={() => {
+          if (deleteTargetId) void removeRow(deleteTargetId);
+        }}
+      />
     </div>
   );
 }
+

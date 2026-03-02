@@ -15,20 +15,21 @@ export default function OrderCreatePage() {
             Alohida sahifada order yaratish
           </div>
         </div>
-        <Link to="/sotuv/orders">
-          <Button variant="outline">← Back</Button>
+        <Link to="/sotuv/ordersKanban">
+          <Button variant="outline">в†ђ Back</Button>
         </Link>
       </div>
 
       {/* Hack: sahifada ham dialog triggerini ko'rsatamiz */}
       <div className="rounded-md border p-4">
         <div className="text-sm text-muted-foreground mb-3">
-          “Open form” bosib order yarating. (Keyin xohlasangiz bu formani to‘liq
-          page ko‘rinishiga chiqarib beraman.)
+          вЂњOpen formвЂќ bosib order yarating. (Keyin xohlasangiz bu formani toвЂliq
+          page koвЂrinishiga chiqarib beraman.)
         </div>
 
-        <OrderCreateDialog onSuccess={() => nav("/sotuv/orders")} />
+        <OrderCreateDialog onSuccess={() => nav("/sotuv/ordersKanban")} />
       </div>
     </div>
   )
 }
+

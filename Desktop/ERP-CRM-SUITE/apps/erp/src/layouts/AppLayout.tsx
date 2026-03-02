@@ -32,7 +32,7 @@ export default function AppLayout() {
               </div>
             )}
 
-            <main className="glass min-w-0 p-4 md:p-6">
+            <main className="dashboard-scope glass min-w-0 p-4 md:p-6">
               <Outlet />
             </main>
           </div>
@@ -59,8 +59,8 @@ function DashTab({
         [
           "rounded-xl px-4 py-2 text-sm font-medium transition",
           isActive
-            ? "bg-slate-900 text-white"
-            : "bg-slate-100 text-slate-700 hover:bg-slate-200",
+            ? "bg-gradient-to-b from-[#0D3B78] to-[#0A4D96] text-white"
+            : "bg-gradient-to-b from-[#0D3B78] to-[#0A4D96] text-white/90 opacity-85 hover:opacity-100",
         ].join(" ")
       }
     >

@@ -3,9 +3,7 @@ import type { LucideIcon } from "lucide-react"
 import {
   LayoutDashboard,
   BookOpen,
-  Boxes,
   ClipboardList,
-  ShoppingCart,
   Warehouse,
   Wallet,
   Factory,
@@ -23,36 +21,38 @@ export type SidebarItemType = {
 }
 
 export const sidebarItems: SidebarItemType[] = [
-  // ✅ 1) Dashboard
+  // 1пёЏвѓЈ Dashboard
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
 
-  // ✅ 2) Ma’lumotnoma
+  // 2пёЏвѓЈ MaвЂ™lumotnoma
   { to: "/dashboard/settings/dicts", label: "Ma'lumotnoma", icon: BookOpen },
 
-  // ✅ 3) Mahsulot katalogi
-  { to: "/dashboard/catalog/products", label: "Mahsulot katalogi", icon: Boxes },
+  // 3пёЏвѓЈ Mahsulot katalogi
 
-  // ✅ 5) Buyurtmalar (sizda bor)
+  // вњ… 5) Buyurtmalar (sizda bor)
 
-  { to: "/sotuv/orders", label: "Buyurtmalar", icon: ClipboardList },
 
-  // ✅ 6) Xaridlar  ← TO‘G‘RI YO‘L
-  { to: "/dashboard/purchases", label: "Xaridlar", icon: ShoppingCart },
+  { to: "/sotuv/ordersKanban", label: "Buyurtmalar", icon: ClipboardList },
 
-  // ✅ 7) Ombor
+  // 5пёЏвѓЈ Xaridlar
+
+
+  // вњ… 7) Ombor
   { to: "/dashboard/sklad/warehouse/overview", label: "Ombor", icon: Warehouse },
 
 
-  // ✅ 8) Moliya
+
+  // 7пёЏвѓЈ Moliya
   { to: "/dashboard/moliya/ledger", label: "Moliya", icon: Wallet },
 
-  // ✅ 9) Ishlab chiqarish
-  { to: "/dashboard/production", label: "Ishlab chiqarish", icon: Factory, disabled: true },
+  // 8пёЏвѓЈ Ishlab chiqarish вњ… endi ishlaydi
+  { to: "/dashboard/production", label: "Ishlab chiqarish", icon: Factory },
 
-  // ✅ 10) Hujjatlar
-  { to: "/dashboard/documents", label: "Hujjatlar", icon: FileText, disabled: true },
+  // 9пёЏвѓЈ Hujjatlar
+  { to: "/dashboard/documents", label: "Hujjatlar", icon: FileText },
 
-  // ✅ Extra
+  // рџ”џ Mijoz va Xodim
   { to: "/xodimlar", label: "Mijoz va Xodim", icon: Users },
   { to: "/login", label: "Logout", icon: LogOut },
 ]
+

@@ -17,10 +17,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import DeleteAlertDialog from "@/components/common/DeleteAlertDialog"
 import { ChevronLeft, ChevronRight, Download, Ellipsis, Eye, Pencil, Trash2 } from "lucide-react"
 import OrderCreateDialog from "@/pages/orders/components/OrderCreateDialog"
 import { api } from "@/lib/api"
 import { toast } from "react-toastify"
+import TableActionIconButton from "@/components/common/TableActionIconButton"
 
 type OrderRow = {
   id: number
@@ -412,43 +414,35 @@ export default function OrdersPage() {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button
-                        className="border-none"
-                        size="sm"
-                        variant="outline"
+                      <TableActionIconButton
+                        title="Tahrirlash"
                         onClick={() => editOrder(r.id)}
                         disabled={busyKey === `${r.id}:edit`}
                       >
-                        <Pencil color="green" size={14} />
-                      </Button>
-                      <Button
-                        className="border-none"
-                        size="sm"
-                        variant="outline"
+                        <Pencil size={14} />
+                      </TableActionIconButton>
+                      <TableActionIconButton
+                        title="Ko'rish"
                         onClick={() => viewOrder(r.id)}
                         disabled={busyKey === `${r.id}:view`}
                       >
-                        <Eye color="blue" size={14} />
-                      </Button>
-                      <Button
-                        className="text-black"
-                        size="sm"
-                        variant="destructive"
+                        <Eye size={14} />
+                      </TableActionIconButton>
+                      <TableActionIconButton
+                        title="O'chirish"
+                        danger
                         onClick={() => askDeleteOrder(r)}
                         disabled={busyKey === `${r.id}:delete`}
                       >
-                        <Trash2 color="red" size={14} />
-
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="secondary"
+                        <Trash2 size={14} />
+                      </TableActionIconButton>
+                      <TableActionIconButton
+                        title="Yuklab olish"
                         onClick={() => downloadOrderFile(r)}
                         disabled={busyKey === `${r.id}:download`}
                       >
                         <Download size={14} />
-
-                      </Button>
+                      </TableActionIconButton>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -643,29 +637,22 @@ export default function OrdersPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <DialogContent className="w-[600px] h-auto">
-          <DialogHeader>
-            <DialogTitle>Zakazni o'chirish</DialogTitle>
-          </DialogHeader>
-          <div className="text-sm text-muted-foreground">
-            {deleteTarget?.order_no} zakazini o'chirmoqchimisiz? Bu amalni bekor qilib bo'lmaydi.
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setDeleteOpen(false)}>
-              Bekor qilish
-            </Button>
-            <Button
-              className="text-black border"
-              variant="destructive"
-              onClick={confirmDeleteOrder}
-              disabled={!deleteTarget || busyKey === `${deleteTarget?.id}:delete`}
-            >
-              O'chirish
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <DeleteAlertDialog
+        open={deleteOpen}
+        onOpenChange={(open) => {
+          setDeleteOpen(open)
+          if (!open) setDeleteTarget(null)
+        }}
+        title="O'chirish"
+        description={
+          <>
+            Rostdan ham <span className="font-bold text-slate-800">{deleteTarget?.order_no ?? "zakaz"}</span> ni
+            o'chirmoqchimisiz?
+          </>
+        }
+        loading={busyKey === `${deleteTarget?.id}:delete`}
+        onConfirm={confirmDeleteOrder}
+      />
     </div>
   )
 }

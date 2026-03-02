@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import DeleteAlertDialog from "@/components/common/DeleteAlertDialog"
 
 export function DeleteConfirmDialog(props: {
   open: boolean
@@ -10,23 +9,15 @@ export function DeleteConfirmDialog(props: {
   onConfirm: () => void
 }) {
   return (
-    <Dialog open={props.open} onOpenChange={(v) => !v && props.onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{props.title ?? "O‘chirishni tasdiqlaysizmi?"}</DialogTitle>
-        </DialogHeader>
-
-        <div className="text-sm text-muted-foreground">
-          {props.description ?? "Bu amalni ortga qaytarib bo‘lmaydi."}
-        </div>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={props.onClose} disabled={props.loading}>Bekor</Button>
-          <Button variant="destructive" onClick={props.onConfirm} disabled={props.loading}>
-            {props.loading ? "O‘chirilmoqda..." : "O‘chirish"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <DeleteAlertDialog
+      open={props.open}
+      onOpenChange={(v) => {
+        if (!v) props.onClose()
+      }}
+      title={props.title ?? "O'chirish"}
+      description={props.description ?? "Bu amalni ortga qaytarib bo'lmaydi."}
+      loading={props.loading}
+      onConfirm={props.onConfirm}
+    />
   )
 }

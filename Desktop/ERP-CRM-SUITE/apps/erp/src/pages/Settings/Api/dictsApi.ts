@@ -1,4 +1,3 @@
-// src/pages/Settings/api/dictsApi.ts
 import { http } from "@/shared/http"
 
 type Paginated<T> = { count: number; next: string | null; previous: string | null; results: T[] }
@@ -19,70 +18,155 @@ type CreatePayload = { name: string; code?: string }
 type PatchPayload = Partial<CreatePayload>
 
 const ENDPOINTS = {
-  uom: "/api/v1/dicts/uom/",
-  materialType: "/api/v1/dicts/material-types/",
-  productCategory: "/api/v1/dicts/product-categories/",
-  warehouseLocation: "/api/v1/dicts/locations/",
+  uom: ["/api/v1/dicts/uom/"],
+  materialType: ["/api/v1/dicts/material-type/", "/api/v1/dicts/material-types/"],
+  productCategory: ["/api/v1/dicts/product-category/", "/api/v1/dicts/product-categories/"],
+  warehouseLocation: ["/api/v1/dicts/warehouse-location/", "/api/v1/dicts/locations/"],
+}
+
+const detailUrl = (base: string, id: number) => `${base}${id}/`
+const restoreUrl = (base: string, id: number) => `${base}${id}/restore/`
+
+function isNotFound(error: any) {
+  return Number(error?.response?.status || 0) === 404
+}
+
+async function withEndpointFallback<T>(
+  candidates: string[],
+  runner: (base: string) => Promise<T>
+): Promise<T> {
+  let lastError: any = null
+  for (const base of candidates) {
+    try {
+      return await runner(base)
+    } catch (error: any) {
+      if (!isNotFound(error)) throw error
+      lastError = error
+    }
+  }
+  throw lastError ?? new Error("Endpoint topilmadi")
 }
 
 export const dictsApi = {
-  // ✅ UOM
   async listUom() {
-    const res = await http.get<Paginated<UomRow> | UomRow[] | any>(ENDPOINTS.uom)
+    const res = await withEndpointFallback(ENDPOINTS.uom, (base) =>
+      http.get<Paginated<UomRow> | UomRow[] | any>(base)
+    )
     return unwrapList<UomRow>(res)
   },
   async createUom(payload: CreatePayload) {
-    return http.post<UomRow>(ENDPOINTS.uom, payload)
+    return withEndpointFallback(ENDPOINTS.uom, (base) => http.post<UomRow>(base, payload))
+  },
+  async getUom(id: number) {
+    return withEndpointFallback(ENDPOINTS.uom, (base) => http.get<UomRow>(detailUrl(base, id)))
   },
   async patchUom(id: number, payload: PatchPayload) {
-    return http.patch<UomRow>(`${ENDPOINTS.uom}${id}/`, payload)
+    return withEndpointFallback(ENDPOINTS.uom, (base) =>
+      http.patch<UomRow>(detailUrl(base, id), payload)
+    )
   },
   async deleteUom(id: number) {
-    return http.delete<void>(`${ENDPOINTS.uom}${id}/`)
+    return withEndpointFallback(ENDPOINTS.uom, (base) => http.delete<void>(detailUrl(base, id)))
+  },
+  async restoreUom(id: number) {
+    return withEndpointFallback(ENDPOINTS.uom, (base) =>
+      http.post<UomRow>(restoreUrl(base, id), {})
+    )
   },
 
-  // ✅ Material types
   async listMaterialTypes() {
-    const res = await http.get<Paginated<MaterialTypeRow> | MaterialTypeRow[] | any>(ENDPOINTS.materialType)
+    const res = await withEndpointFallback(ENDPOINTS.materialType, (base) =>
+      http.get<Paginated<MaterialTypeRow> | MaterialTypeRow[] | any>(base)
+    )
     return unwrapList<MaterialTypeRow>(res)
   },
   async createMaterialType(payload: CreatePayload) {
-    return http.post<MaterialTypeRow>(ENDPOINTS.materialType, payload)
+    return withEndpointFallback(ENDPOINTS.materialType, (base) =>
+      http.post<MaterialTypeRow>(base, payload)
+    )
+  },
+  async getMaterialType(id: number) {
+    return withEndpointFallback(ENDPOINTS.materialType, (base) =>
+      http.get<MaterialTypeRow>(detailUrl(base, id))
+    )
   },
   async patchMaterialType(id: number, payload: PatchPayload) {
-    return http.patch<MaterialTypeRow>(`${ENDPOINTS.materialType}${id}/`, payload)
+    return withEndpointFallback(ENDPOINTS.materialType, (base) =>
+      http.patch<MaterialTypeRow>(detailUrl(base, id), payload)
+    )
   },
   async deleteMaterialType(id: number) {
-    return http.delete<void>(`${ENDPOINTS.materialType}${id}/`)
+    return withEndpointFallback(ENDPOINTS.materialType, (base) =>
+      http.delete<void>(detailUrl(base, id))
+    )
+  },
+  async restoreMaterialType(id: number) {
+    return withEndpointFallback(ENDPOINTS.materialType, (base) =>
+      http.post<MaterialTypeRow>(restoreUrl(base, id), {})
+    )
   },
 
-  // ✅ Product categories
   async listProductCategories() {
-    const res = await http.get<Paginated<ProductCategoryRow> | ProductCategoryRow[] | any>(ENDPOINTS.productCategory)
+    const res = await withEndpointFallback(ENDPOINTS.productCategory, (base) =>
+      http.get<Paginated<ProductCategoryRow> | ProductCategoryRow[] | any>(base)
+    )
     return unwrapList<ProductCategoryRow>(res)
   },
   async createProductCategory(payload: CreatePayload) {
-    return http.post<ProductCategoryRow>(ENDPOINTS.productCategory, payload)
+    return withEndpointFallback(ENDPOINTS.productCategory, (base) =>
+      http.post<ProductCategoryRow>(base, payload)
+    )
+  },
+  async getProductCategory(id: number) {
+    return withEndpointFallback(ENDPOINTS.productCategory, (base) =>
+      http.get<ProductCategoryRow>(detailUrl(base, id))
+    )
   },
   async patchProductCategory(id: number, payload: PatchPayload) {
-    return http.patch<ProductCategoryRow>(`${ENDPOINTS.productCategory}${id}/`, payload)
+    return withEndpointFallback(ENDPOINTS.productCategory, (base) =>
+      http.patch<ProductCategoryRow>(detailUrl(base, id), payload)
+    )
   },
   async deleteProductCategory(id: number) {
-    return http.delete<void>(`${ENDPOINTS.productCategory}${id}/`)
+    return withEndpointFallback(ENDPOINTS.productCategory, (base) =>
+      http.delete<void>(detailUrl(base, id))
+    )
+  },
+  async restoreProductCategory(id: number) {
+    return withEndpointFallback(ENDPOINTS.productCategory, (base) =>
+      http.post<ProductCategoryRow>(restoreUrl(base, id), {})
+    )
   },
 
-  // ✅ Warehouse locations
   async listWarehouseLocations() {
-    const res = await http.get<Paginated<WarehouseLocationRow> | WarehouseLocationRow[] | any>(ENDPOINTS.warehouseLocation)
+    const res = await withEndpointFallback(ENDPOINTS.warehouseLocation, (base) =>
+      http.get<Paginated<WarehouseLocationRow> | WarehouseLocationRow[] | any>(base)
+    )
     return unwrapList<WarehouseLocationRow>(res)
   },
   async createWarehouseLocation(payload: CreatePayload) {
-    return http.post<WarehouseLocationRow>(ENDPOINTS.warehouseLocation, payload)
+    return withEndpointFallback(ENDPOINTS.warehouseLocation, (base) =>
+      http.post<WarehouseLocationRow>(base, payload)
+    )
+  },
+  async getWarehouseLocation(id: number) {
+    return withEndpointFallback(ENDPOINTS.warehouseLocation, (base) =>
+      http.get<WarehouseLocationRow>(detailUrl(base, id))
+    )
   },
   async patchWarehouseLocation(id: number, payload: PatchPayload) {
-    return http.patch<WarehouseLocationRow>(`${ENDPOINTS.warehouseLocation}${id}/`, payload)
+    return withEndpointFallback(ENDPOINTS.warehouseLocation, (base) =>
+      http.patch<WarehouseLocationRow>(detailUrl(base, id), payload)
+    )
   },
   async deleteWarehouseLocation(id: number) {
-    return http.delete<void>(`${ENDPOINTS.warehouseLocation}${id}/`)
+    return withEndpointFallback(ENDPOINTS.warehouseLocation, (base) =>
+      http.delete<void>(detailUrl(base, id))
+    )
+  },
+  async restoreWarehouseLocation(id: number) {
+    return withEndpointFallback(ENDPOINTS.warehouseLocation, (base) =>
+      http.post<WarehouseLocationRow>(restoreUrl(base, id), {})
+    )
   },
 }

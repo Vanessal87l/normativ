@@ -1,5 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 
+import { Pencil, Trash2 } from "lucide-react";
+import TableActionIconButton from "@/components/common/TableActionIconButton";
+
+import DeleteAlertDialog from "@/components/common/DeleteAlertDialog";
+
+
 export type RecentSaleRow = {
   id: string | number;
   name: string; // Ism/Nomi
@@ -423,21 +429,12 @@ export default function RecentSalesLuxuryTable({
 
                     <td className="px-4 py-3">
                       <div className="flex items-center justify-end gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEdit(r)}
-                          className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 font-semibold text-slate-800 hover:bg-slate-50"
-                        >
-                          ✏️ Tahrirlash
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setDeleteId(r.id)}
-                          className="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 font-semibold text-red-700 hover:bg-red-100"
-                        >
-                          🗑 O‘chirish
-                        </button>
+                        <TableActionIconButton title="Tahrirlash" onClick={() => openEdit(r)}>
+                          <Pencil size={16} />
+                        </TableActionIconButton>
+                        <TableActionIconButton title="O'chirish" danger onClick={() => setDeleteId(r.id)}>
+                          <Trash2 size={16} />
+                        </TableActionIconButton>
                       </div>
                     </td>
                   </tr>
@@ -512,37 +509,18 @@ export default function RecentSalesLuxuryTable({
         </div>
       </div>
 
-      {/* ✅ DELETE CONFIRM MODAL */}
-      {deleteId != null && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-5 shadow-xl">
-            <div className="text-sm font-extrabold text-slate-900">O‘chirishni tasdiqlaysizmi?</div>
-            <div className="mt-2 text-xs text-slate-500">
-              Bu amal qaytarib bo‘lmaydi. Haqiqatan ham o‘chirmoqchimisiz?
-            </div>
-
-            <div className="mt-4 flex items-center justify-end gap-2">
-              <button
-                type="button"
-                disabled={deleting}
-                onClick={() => setDeleteId(null)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
-              >
-                Bekor qilish
-              </button>
-
-              <button
-                type="button"
-                disabled={deleting}
-                onClick={handleDeleteConfirmed}
-                className="rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-100 disabled:opacity-50"
-              >
-                {deleting ? "O‘chirilmoqda..." : "O‘chirish"}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DeleteAlertDialog
+        open={deleteId != null}
+        onOpenChange={(open) => {
+          if (!open) setDeleteId(null);
+        }}
+        title="O'chirish"
+        description="Rostdan ham ushbu sotuv yozuvini o'chirmoqchimisiz?"
+        loading={deleting}
+        onConfirm={() => {
+          void handleDeleteConfirmed();
+        }}
+      />
 
       {/* ✅ EDIT MODAL */}
       {editOpen && editRow && (

@@ -1,4 +1,3 @@
-// src/pages/Settings/DictsSettingsPage.tsx
 import { useEffect, useMemo, useState } from "react"
 import DashboardShell from "@/pages/Dashboard/components/DashboardShell"
 import {
@@ -8,7 +7,7 @@ import {
   type ProductCategoryRow,
   type WarehouseLocationRow,
 } from "./Api/dictsApi"
-import { Eye, Pencil, Trash2 } from "lucide-react"
+import { Eye, Pencil, RotateCcw, Trash2 } from "lucide-react"
 
 type TabKey = "uom" | "material" | "category" | "location"
 type RowBase = { id: number; name: string; code?: string }
@@ -17,10 +16,27 @@ function cx(...a: Array<string | false | undefined | null>) {
   return a.filter(Boolean).join(" ")
 }
 
+function getApiErrorMessage(error: any, fallback: string) {
+  const status = Number(error?.response?.status || 0)
+  const data = error?.response?.data
+  const detail = data?.detail ? String(data.detail) : ""
+  const text = typeof data === "string" ? data : data ? JSON.stringify(data) : ""
+
+  if (status === 409) {
+    return detail || "Bog'langan ma'lumotlar bor. Shu sabab amal bajarilmadi."
+  }
+  if (status === 400 && (detail || text.toLowerCase().includes("already exists"))) {
+    return detail || "Bunday qiymat allaqachon mavjud."
+  }
+  if (detail) return detail
+  if (typeof data === "string" && data.trim()) return data
+  return fallback
+}
+
 export default function DictsSettingsPage() {
   const tabs: Array<{ key: TabKey; title: string; subtitle: string }> = useMemo(
     () => [
-      { key: "uom", title: "UoM", subtitle: "O‘lchov birliklari (kg, dona, litr...)" },
+      { key: "uom", title: "UoM", subtitle: "O'lchov birliklari (kg, dona, litr...)" },
       { key: "material", title: "Material Type", subtitle: "Xom ashyo turlari" },
       { key: "category", title: "Product Category", subtitle: "Mahsulot kategoriyalari" },
       { key: "location", title: "Warehouse Location", subtitle: "Ombor joylari" },
@@ -32,9 +48,9 @@ export default function DictsSettingsPage() {
 
   return (
     <DashboardShell>
-      <div className="rounded-2xl bg-white border border-slate-200 shadow-sm p-4">
-        <div className="text-lg font-extrabold text-slate-900">Ma’lumotnoma (Dicts)</div>
-        <div className="mt-1 text-xs text-slate-500">Dropdown/selectlar shu yerdan to‘ladi</div>
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+        <div className="text-lg font-extrabold text-slate-900">Ma'lumotnoma (Dicts)</div>
+        <div className="mt-1 text-xs text-slate-500">Dropdown/selectlar shu yerdan to'ladi</div>
 
         <div className="mt-4 flex flex-wrap gap-2">
           {tabs.map((t) => (
@@ -43,10 +59,10 @@ export default function DictsSettingsPage() {
               type="button"
               onClick={() => setTab(t.key)}
               className={cx(
-                "h-9 rounded-lg px-3 text-xs font-extrabold border transition",
+                "h-9 rounded-lg border px-3 text-xs font-extrabold transition",
                 tab === t.key
-                  ? "bg-slate-900 border-slate-900 text-white"
-                  : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                  ? "border-slate-900 bg-slate-900 text-white"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
               )}
             >
               {t.title}
@@ -59,11 +75,14 @@ export default function DictsSettingsPage() {
         {tab === "uom" && (
           <DictSection<UomRow>
             title="UoM"
-            subtitle="O‘lchov birliklari"
+            subtitle="O'lchov birliklari"
             fetcher={dictsApi.listUom}
+            detailer={dictsApi.getUom}
             creator={dictsApi.createUom}
             patcher={dictsApi.patchUom}
             deleter={dictsApi.deleteUom}
+            restorer={dictsApi.restoreUom}
+            supportsCode
           />
         )}
 
@@ -72,9 +91,11 @@ export default function DictsSettingsPage() {
             title="Material Type"
             subtitle="Xom ashyo turlari"
             fetcher={dictsApi.listMaterialTypes}
+            detailer={dictsApi.getMaterialType}
             creator={dictsApi.createMaterialType}
             patcher={dictsApi.patchMaterialType}
             deleter={dictsApi.deleteMaterialType}
+            restorer={dictsApi.restoreMaterialType}
           />
         )}
 
@@ -83,9 +104,11 @@ export default function DictsSettingsPage() {
             title="Product Category"
             subtitle="Mahsulot kategoriyalari"
             fetcher={dictsApi.listProductCategories}
+            detailer={dictsApi.getProductCategory}
             creator={dictsApi.createProductCategory}
             patcher={dictsApi.patchProductCategory}
             deleter={dictsApi.deleteProductCategory}
+            restorer={dictsApi.restoreProductCategory}
           />
         )}
 
@@ -94,9 +117,11 @@ export default function DictsSettingsPage() {
             title="Warehouse Location"
             subtitle="Ombor joylari"
             fetcher={dictsApi.listWarehouseLocations}
+            detailer={dictsApi.getWarehouseLocation}
             creator={dictsApi.createWarehouseLocation}
             patcher={dictsApi.patchWarehouseLocation}
             deleter={dictsApi.deleteWarehouseLocation}
+            restorer={dictsApi.restoreWarehouseLocation}
           />
         )}
       </div>
@@ -108,26 +133,32 @@ function DictSection<T extends RowBase>({
   title,
   subtitle,
   fetcher,
+  detailer,
   creator,
   patcher,
   deleter,
+  restorer,
+  supportsCode = false,
 }: {
   title: string
   subtitle: string
   fetcher: () => Promise<T[]>
+  detailer: (id: number) => Promise<T>
   creator: (p: { name: string; code?: string }) => Promise<T>
   patcher: (id: number, p: { name?: string; code?: string }) => Promise<T>
   deleter: (id: number) => Promise<any>
+  restorer: (id: number) => Promise<T>
+  supportsCode?: boolean
 }) {
   const [ui, setUi] = useState<"loading" | "ready" | "error">("loading")
   const [err, setErr] = useState<string | null>(null)
   const [rows, setRows] = useState<T[]>([])
   const [q, setQ] = useState("")
 
-  // modal
   const [open, setOpen] = useState(false)
   const [mode, setMode] = useState<"create" | "edit" | "view" | "delete">("create")
   const [current, setCurrent] = useState<T | null>(null)
+  const [lastDeleted, setLastDeleted] = useState<T | null>(null)
 
   const [name, setName] = useState("")
   const [code, setCode] = useState("")
@@ -141,7 +172,7 @@ function DictSection<T extends RowBase>({
       setUi("ready")
     } catch (e: any) {
       setUi("error")
-      setErr(e?.response?.data ? JSON.stringify(e.response.data) : e?.message || "Xatolik")
+      setErr(getApiErrorMessage(e, "Yuklashda xatolik"))
     }
   }
 
@@ -169,13 +200,21 @@ function DictSection<T extends RowBase>({
     setOpen(true)
   }
 
-  function openView(r: T) {
+  async function openView(r: T) {
     setMode("view")
     setCurrent(r)
     setName(r.name ?? "")
     setCode(r.code ?? "")
     setErr(null)
     setOpen(true)
+    try {
+      const full = await detailer(r.id)
+      setCurrent(full)
+      setName(full.name ?? "")
+      setCode(full.code ?? "")
+    } catch (e: any) {
+      setErr(getApiErrorMessage(e, "Ma'lumotni olishda xatolik"))
+    }
   }
 
   function openEdit(r: T) {
@@ -202,33 +241,24 @@ function DictSection<T extends RowBase>({
 
       const n = name.trim()
       const cRaw = code.trim()
-      const c = cRaw ? cRaw.toUpperCase() : undefined
+      const c = supportsCode && cRaw ? cRaw.toUpperCase() : undefined
 
       if (!n) {
         setErr("Nomi majburiy.")
         return
       }
 
-      // ✅ agar backend code'ni majburiy qilgan bo‘lsa:
-      // if (!c) { setErr("Code majburiy."); return }
-
-      // ✅ CREATE paytida oldindan duplicate tekshiruv
-      if (mode === "create" && c) {
-        const exists = rows.some(
-          (x) => String(x.code || "").trim().toUpperCase() === c
-        )
+      if (supportsCode && mode === "create" && c) {
+        const exists = rows.some((x) => String(x.code || "").trim().toUpperCase() === c)
         if (exists) {
           setErr(`Bu code (${c}) allaqachon mavjud. Boshqa code kiriting.`)
           return
         }
       }
 
-      // ✅ EDIT paytida ham (o‘zidan boshqalar bilan solishtiramiz)
-      if (mode === "edit" && c && current) {
+      if (supportsCode && mode === "edit" && c && current) {
         const exists = rows.some(
-          (x) =>
-            x.id !== current.id &&
-            String(x.code || "").trim().toUpperCase() === c
+          (x) => x.id !== current.id && String(x.code || "").trim().toUpperCase() === c
         )
         if (exists) {
           setErr(`Bu code (${c}) allaqachon mavjud. Boshqa code kiriting.`)
@@ -248,34 +278,16 @@ function DictSection<T extends RowBase>({
         const updated = await patcher(current.id, { name: n, code: c })
         setRows((prev) => prev.map((x) => (x.id === updated.id ? updated : x)))
         setOpen(false)
-        return
       }
     } catch (e: any) {
-      const data = e?.response?.data
-
-      // ✅ Backend ba’zida string/HTML debug page qaytaradi
-      const text =
-        typeof data === "string"
-          ? data
-          : data
-            ? JSON.stringify(data)
-            : ""
-
-      // ✅ duplicate code errorni user-friendly qilish
-      if (
-        text.includes("duplicate key") ||
-        text.includes("uom_code_key") ||
-        text.toLowerCase().includes("already exists")
-      ) {
+      const text = JSON.stringify(e?.response?.data ?? "").toLowerCase()
+      if (supportsCode && (text.includes("uom_code_key") || text.includes("duplicate"))) {
         setErr("Bu code allaqachon mavjud. Iltimos boshqa code kiriting.")
         return
       }
-
-      setErr(typeof data === "string" ? data : (e?.message || "Saqlashda xatolik"))
+      setErr(getApiErrorMessage(e, "Saqlashda xatolik"))
     }
   }
-
-
 
   async function remove() {
     if (!current) return
@@ -283,16 +295,29 @@ function DictSection<T extends RowBase>({
       setErr(null)
       await deleter(current.id)
       setRows((prev) => prev.filter((x) => x.id !== current.id))
+      setLastDeleted(current)
       setOpen(false)
     } catch (e: any) {
-      setErr(e?.response?.data ? JSON.stringify(e.response.data) : e?.message || "O‘chirishda xatolik")
+      setErr(getApiErrorMessage(e, "O'chirishda xatolik"))
     }
   }
 
-  const headerCard = "rounded-2xl bg-white border border-slate-200 shadow-sm"
+  async function restoreLastDeleted() {
+    if (!lastDeleted) return
+    try {
+      setErr(null)
+      const restored = await restorer(lastDeleted.id)
+      setRows((prev) => [restored, ...prev])
+      setLastDeleted(null)
+    } catch (e: any) {
+      setErr(getApiErrorMessage(e, "Restore qilishda xatolik"))
+    }
+  }
+
+  const headerCard = "rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
 
   return (
-    <div className={cx(headerCard, "p-4")}>
+    <div className={headerCard}>
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="text-sm font-extrabold text-slate-900">{title}</div>
@@ -301,7 +326,7 @@ function DictSection<T extends RowBase>({
 
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
-            <span className="text-slate-400">🔎</span>
+            <span className="text-slate-400">Q</span>
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -310,12 +335,25 @@ function DictSection<T extends RowBase>({
             />
           </div>
 
+          {lastDeleted ? (
+            <button
+              type="button"
+              onClick={restoreLastDeleted}
+              className="h-9 rounded-lg border border-emerald-200 bg-emerald-50 px-3 text-xs font-extrabold text-emerald-700 hover:bg-emerald-100"
+            >
+              <span className="inline-flex items-center gap-1">
+                <RotateCcw size={14} />
+                Restore
+              </span>
+            </button>
+          ) : null}
+
           <button
             type="button"
             onClick={openCreate}
-            className="h-9 rounded-lg bg-slate-900 px-4 text-xs font-extrabold text-white hover:bg-slate-800"
+            className="app-btn-default h-9 rounded-lg px-4 text-xs font-extrabold"
           >
-            + Qo‘shish
+            + Qo'shish
           </button>
         </div>
       </div>
@@ -336,26 +374,23 @@ function DictSection<T extends RowBase>({
                 <th className="px-6 py-4 font-bold">Name</th>
                 <th className="px-6 py-4 font-bold">Code</th>
                 <th className="px-6 py-4 font-bold">Created</th>
-                <th className="px-6 py-4 font-bold text-right">Actions</th>
+                <th className="px-6 py-4 text-right font-bold">Actions</th>
               </tr>
             </thead>
 
             <tbody className="divide-y divide-slate-100">
               {filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={4} className="px-6 py-10 text-center text-slate-500 text-sm">
-                    Hozircha ma’lumot yo‘q.
+                  <td colSpan={4} className="px-6 py-10 text-center text-sm text-slate-500">
+                    Hozircha ma'lumot yo'q.
                   </td>
                 </tr>
               ) : (
                 filtered.map((r) => (
-                  <tr key={r.id} className="bg-white hover:bg-slate-50 transition">
+                  <tr key={r.id} className="bg-white transition hover:bg-slate-50">
                     <td className="px-6 py-5 font-medium text-slate-900">{r.name}</td>
-                    <td className="px-6 py-5 text-slate-600">{r.code ?? "—"}</td>
-                    <td className="px-6 py-5 text-slate-600">
-                      {/* dicts response’da created bo‘lmasligi mumkin */}
-                      —
-                    </td>
+                    <td className="px-6 py-5 text-slate-600">{r.code ?? "-"}</td>
+                    <td className="px-6 py-5 text-slate-600">-</td>
                     <td className="px-6 py-4">
                       <div className="flex justify-end gap-2">
                         <IconBtn title="View" onClick={() => openView(r)}>
@@ -381,12 +416,12 @@ function DictSection<T extends RowBase>({
         <Modal
           title={
             mode === "create"
-              ? "Yangi qo‘shish"
+              ? "Yangi qo'shish"
               : mode === "edit"
                 ? "Tahrirlash"
                 : mode === "view"
-                  ? "Ko‘rish"
-                  : "O‘chirish"
+                  ? "Ko'rish"
+                  : "O'chirish"
           }
           err={err}
           onClose={() => setOpen(false)}
@@ -394,7 +429,7 @@ function DictSection<T extends RowBase>({
           {mode === "delete" ? (
             <div>
               <div className="text-sm text-slate-700">
-                Rostdan ham <b>{current?.name}</b> ni o‘chirmoqchimisiz?
+                Rostdan ham <b>{current?.name}</b> ni o'chirmoqchimisiz?
               </div>
 
               <div className="mt-5 flex items-center justify-end gap-2">
@@ -402,7 +437,7 @@ function DictSection<T extends RowBase>({
                   Bekor
                 </Btn>
                 <Btn onClick={remove} variant="danger">
-                  O‘chirish
+                  O'chirish
                 </Btn>
               </div>
             </div>
@@ -418,15 +453,17 @@ function DictSection<T extends RowBase>({
                   />
                 </Field>
 
-                <Field label="Code (ixtiyoriy)">
-                  <input
-                    value={code}
-                    onChange={(e) => setCode(e.target.value)}
-                    disabled={mode === "view"}
-                    className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none disabled:bg-slate-50"
-                    placeholder="Masalan: KG / PCS ..."
-                  />
-                </Field>
+                {supportsCode ? (
+                  <Field label="Code (ixtiyoriy)">
+                    <input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      disabled={mode === "view"}
+                      className="h-10 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none disabled:bg-slate-50"
+                      placeholder="Masalan: KG / PCS ..."
+                    />
+                  </Field>
+                ) : null}
               </div>
 
               <div className="mt-5 flex items-center justify-end gap-2">
@@ -465,10 +502,10 @@ function IconBtn({
       title={title}
       onClick={onClick}
       className={cx(
-        "h-10 w-12 rounded-xl border flex items-center justify-center transition",
+        "flex h-10 w-14 items-center justify-center rounded-2xl border transition",
         danger
-          ? "border-rose-200 bg-rose-50 text-rose-600 hover:bg-rose-100"
-          : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+          ? "!border-rose-200 !bg-rose-50 !text-rose-600 hover:!bg-rose-100"
+          : "!border-slate-200 !bg-white !text-slate-700 hover:!bg-slate-50"
       )}
     >
       {children}
@@ -488,22 +525,24 @@ function Modal({
   err: string | null
 }) {
   return (
-    <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-      <div className="w-full max-w-[560px] rounded-2xl bg-white border border-slate-200 shadow-xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-[560px] rounded-2xl border border-slate-200 bg-white shadow-xl">
         <div className="p-5">
           <div className="flex items-center justify-between gap-3">
             <div className="text-lg font-extrabold text-slate-900">{title}</div>
             <button
               type="button"
               onClick={onClose}
-              className="h-9 px-3 rounded-lg border border-slate-200 bg-white text-xs font-extrabold text-slate-700 hover:bg-slate-50"
+              className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-xs font-extrabold text-slate-700 hover:bg-slate-50"
             >
-              ✕
+              X
             </button>
           </div>
 
           {err && (
-            <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</div>
+            <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
+              {err}
+            </div>
           )}
 
           <div className="mt-4">{children}</div>
@@ -533,10 +572,10 @@ function Btn({
 }) {
   const cls =
     variant === "primary"
-      ? "bg-slate-900 text-white hover:bg-slate-800"
+      ? "app-btn-default text-white"
       : variant === "danger"
         ? "bg-rose-600 text-white hover:bg-rose-700"
-        : "bg-white text-slate-700 border border-slate-200 hover:bg-slate-50"
+        : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
 
   return (
     <button type="button" onClick={onClick} className={cx("h-10 rounded-xl px-4 text-sm font-extrabold", cls)}>

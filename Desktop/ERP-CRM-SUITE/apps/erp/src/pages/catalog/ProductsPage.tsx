@@ -16,6 +16,7 @@ export default function ProductsPage() {
   const [count, setCount] = useState(0)
 
   const [q, setQ] = useState("")
+  const [ordering, setOrdering] = useState<"name" | "-name" | "-created_at">("-created_at")
   const [page, setPage] = useState(1)
   const pageSize = 10
   const totalPages = useMemo(() => Math.max(1, Math.ceil(count / pageSize)), [count, pageSize])
@@ -32,6 +33,7 @@ export default function ProductsPage() {
       setErr(null)
       const res = await productsApi.list({
         search: q.trim() || undefined,
+        ordering,
         page,
         page_size: pageSize,
       })
@@ -47,7 +49,7 @@ export default function ProductsPage() {
   useEffect(() => {
     load()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, pageSize])
+  }, [page, pageSize, ordering])
 
   useEffect(() => {
     setPage(1)
@@ -94,6 +96,16 @@ export default function ProductsPage() {
               <Plus size={16} />
               Qo‘shish
             </button>
+
+            <select
+              value={ordering}
+              onChange={(e) => setOrdering(e.target.value as any)}
+              className="h-10 rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-700"
+            >
+              <option value="-created_at">Yangi avval</option>
+              <option value="name">Name A-Z</option>
+              <option value="-name">Name Z-A</option>
+            </select>
           </div>
         </div>
 

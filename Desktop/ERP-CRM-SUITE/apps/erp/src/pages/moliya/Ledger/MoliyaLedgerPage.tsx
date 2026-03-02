@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from "react"
 import { financeClient } from "../shared/financeClient"
 import type { FinanceEntry, EntryType, PaymentMethod } from "../shared/demoStore"
 import { api } from "@/lib/api"
+import { Pencil, Trash2 } from "lucide-react"
+import TableActionIconButton from "@/components/common/TableActionIconButton"
 
 type Filters = {
   startDate?: string
@@ -360,21 +362,12 @@ export default function MoliyaLedgerPage() {
 
                     <td className="px-4 py-3 text-right">
                       <div className="inline-flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={() => openEdit(r)}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[11px] font-extrabold text-slate-700 hover:bg-slate-50"
-                        >
-                          Tahrirlash
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => removeRow(r.id)}
-                          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-[11px] font-extrabold text-slate-700 hover:bg-slate-50"
-                        >
-                          O‘chirish
-                        </button>
+                        <TableActionIconButton title="Tahrirlash" onClick={() => openEdit(r)}>
+                          <Pencil size={16} />
+                        </TableActionIconButton>
+                        <TableActionIconButton title="O'chirish" danger onClick={() => removeRow(r.id)}>
+                          <Trash2 size={16} />
+                        </TableActionIconButton>
                       </div>
                     </td>
                   </tr>

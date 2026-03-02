@@ -33,6 +33,73 @@ body {
   color: #0f172a;
 }
 
+.app-btn-default {
+  background-image: linear-gradient(to bottom, #0D3B78, #0A4D96);
+  color: #ffffff;
+}
+
+.app-btn-default:hover {
+  filter: brightness(1.06);
+}
+
+.dashboard-scope button {
+  background-image: linear-gradient(to bottom, #0D3B78, #0A4D96);
+  color: #ffffff;
+}
+
+.dashboard-scope button:hover {
+  filter: brightness(1.06);
+}
+
+.dashboard-scope button:disabled {
+  filter: none;
+}
+
+.moliya-scope button {
+  background-image: linear-gradient(to bottom, #0D3B78, #0A4D96);
+  color: #ffffff;
+}
+
+.moliya-scope button:hover {
+  filter: brightness(1.06);
+}
+
+.moliya-scope button:disabled {
+  filter: none;
+}
+
+.production-scope button {
+  background-image: linear-gradient(to bottom, #0D3B78, #0A4D96);
+  color: #ffffff;
+}
+
+.production-scope button:hover {
+  filter: brightness(1.06);
+}
+
+.production-scope button:disabled {
+  filter: none;
+}
+
+.dashboard-scope table button,
+.dashboard-scope [data-slot="table-container"] button,
+.moliya-scope table button,
+.moliya-scope [data-slot="table-container"] button,
+.production-scope table button,
+.production-scope [data-slot="table-container"] button {
+  background-image: none;
+  background-color: #ffffff;
+  color: #334155;
+  filter: none;
+}
+
+[data-slot="table-container"] [data-slot="button"][data-variant="default"] {
+  background-image: none;
+  background-color: #ffffff;
+  color: #334155;
+  filter: none;
+}
+
 /* Glass */
 .glass {
   background: rgba(255, 255, 255, 0.55);
@@ -113,4 +180,13 @@ select option {}
 select option:hover {
   background: #e2e8f0;
   /* slate-200 */
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }

@@ -1,0 +1,16 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "directory": "apps/portal",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "apps/erp",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "apps/crm",
+      "changeProcessCWD": true
+    }
+  ]
+}

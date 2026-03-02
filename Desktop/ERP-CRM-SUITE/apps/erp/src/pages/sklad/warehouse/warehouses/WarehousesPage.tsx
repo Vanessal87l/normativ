@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { warehouseApi } from "../api/warehouseApi"
 import type { LookupItem } from "../api/types"
-
+  
 export default function WarehousesPage() {
   const [warehouses, setWarehouses] = useState<LookupItem[]>([])
   const [locations, setLocations] = useState<LookupItem[]>([])
