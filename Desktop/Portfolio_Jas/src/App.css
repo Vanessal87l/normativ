@@ -1,0 +1,111 @@
+
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Inter, sans-serif;
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #ff4500, #ff8c00, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: 0.3s ease;
+}
+
+.glass-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255, 69, 0, 0.6);
+  box-shadow: 0 20px 40px rgba(255, 69, 0, 0.15);
+}
+
+.nav-link {
+  position: relative;
+  color: rgba(255, 255, 255, 0.7);
+  transition: 0.3s ease;
+}
+
+.nav-link:hover {
+  color: white;
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  background: #ff4500;
+  transition: 0.3s ease;
+}
+
+.nav-link:hover::after {
+  width: 100%;
+}
+
+.section-title {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  line-height: 1;
+  font-weight: 800;
+}
+
+.project-card img {
+  transition: transform 0.5s ease;
+}
+
+.project-card:hover img {
+  transform: scale(1.06);
+}
