@@ -1,5 +1,6 @@
-
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import PropTypes from "prop-types";
+import SplitScroll from "./components/SplitScroll";
 
 function HeroVideo() {
   const videoRef = useRef(null);
@@ -11,8 +12,13 @@ function HeroVideo() {
   const togglePlay = () => {
     const v = videoRef.current;
     if (!v) return;
-    if (v.paused) { v.play(); setPlaying(true); }
-    else { v.pause(); setPlaying(false); }
+    if (v.paused) {
+      v.play();
+      setPlaying(true);
+    } else {
+      v.pause();
+      setPlaying(false);
+    }
   };
 
   const toggleMute = () => {
@@ -27,15 +33,15 @@ function HeroVideo() {
     const canvas = canvasRef.current;
     if (!v || !v.duration) return;
 
-    // canvas brightness detection — skip white frames
     try {
       if (canvas) {
         const ctx = canvas.getContext("2d");
         ctx.drawImage(v, 0, 0, 32, 32);
         const { data } = ctx.getImageData(0, 0, 32, 32);
         let sum = 0;
-        for (let i = 0; i < data.length; i += 4)
+        for (let i = 0; i < data.length; i += 4) {
           sum += (data[i] + data[i + 1] + data[i + 2]) / 3;
+        }
         if (sum / (data.length / 4) > 160) {
           v.currentTime = 0;
           v.play();
@@ -43,7 +49,9 @@ function HeroVideo() {
           return;
         }
       }
-    } catch (e) { void e; }
+    } catch (e) {
+      void e;
+    }
 
     setProgress((v.currentTime / v.duration) * 100);
   };
@@ -57,7 +65,7 @@ function HeroVideo() {
 
   return (
     <div className="relative min-h-125 overflow-hidden rounded-[28px]">
-      <canvas ref={canvasRef} width={32} height={32} className="hidden" />
+      <canvas ref={canvasRef} width={42} height={20} className="hidden" />
 
       <video
         ref={videoRef}
@@ -72,14 +80,8 @@ function HeroVideo() {
         onPause={() => setPlaying(false)}
       />
 
-      {/* bottom fade into controls */}
-      <div className="absolute inset-0 bg-linear-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
 
-
-
-      {/* Controls — overlaid at bottom */}
-      <div className="absolute bottom-0 left-0 нright-0 z-10 px-4 pb-4 pt-8">
-        {/* Progress bar */}
+      <div className="absolute bottom-0 left-0 right-0 z-10 px-4 pb-4 pt-4">
         <div
           className="mb-3 h-[3px] w-full cursor-pointer rounded-full bg-white/15 hover:bg-white/25 transition-colors"
           onClick={handleSeek}
@@ -121,8 +123,6 @@ function HeroVideo() {
               </svg>
             )}
           </button>
-
-
         </div>
       </div>
     </div>
@@ -143,34 +143,114 @@ const stack = [
 ];
 
 const process = [
-  { id: "01", title: "Знакомство", text: "Погружаюсь в задачу, продукт и цели проекта, чтобы понять контекст и ожидания." },
-  { id: "02", title: "Анализ задачи", text: "Продумываю структуру интерфейса, пользовательский путь и технический подход." },
-  { id: "03", title: "UI Implementation", text: "Перевожу идею или дизайн в современный, чистый и выразительный интерфейс." },
-  { id: "04", title: "Frontend Development", text: "Собираю компоненты, состояния, интеграции и рабочую логику интерфейса." },
-  { id: "05", title: "Адаптация", text: "Делаю интерфейс адаптивным, плавным и удобным для разных устройств." },
-  { id: "06", title: "Запуск", text: "Финально полирую проект и подготавливаю его к уверенной презентации или релизу." },
+  {
+    id: "01",
+    title: "Знакомство",
+    text: "Погружаюсь в задачу, продукт и цели проекта, чтобы понять контекст и ожидания.",
+  },
+  {
+    id: "02",
+    title: "Анализ задачи",
+    text: "Продумываю структуру интерфейса, пользовательский путь и технический подход.",
+  },
+  {
+    id: "03",
+    title: "UI Implementation",
+    text: "Перевожу идею или дизайн в современный, чистый и выразительный интерфейс.",
+  },
+  {
+    id: "04",
+    title: "Frontend Development",
+    text: "Собираю компоненты, состояния, интеграции и рабочую логику интерфейса.",
+  },
+  {
+    id: "05",
+    title: "Адаптация",
+    text: "Делаю интерфейс адаптивным, плавным и удобным для разных устройств.",
+  },
+  {
+    id: "06",
+    title: "Запуск",
+    text: "Финально полирую проект и подготавливаю его к уверенной презентации или релизу.",
+  },
 ];
 
 const projects = [
   {
-    title: "ERP Dashboard",
-    desc: "Премиальный интерфейс для управления продажами, складом и аналитикой.",
-    tech: ["React", "TypeScript", "Tailwind"],
+    title: "CellMedicine",
+    desc: "Разработан премиальный веб-сайт для медицинской индустрии, ориентированный на клиники и медицинские центры. Проект сочетает в себе современный UI/UX и высокую производительность.",
+    tech: ["React", "TypeScript", "Tailwind", "i18n", "Framer-Motion", "GSAP"],
+    image: "/image/cellmedicine.png",
+    liveDemo: "https://cell-medicine.vercel.app/",
+    github: "",
+    details: {
+      goal: "Создать премиальный мирового уровня  сайт для медицинской индустрии, который усиливает доверие к бренду клиники, подчеркивает высокий уровень сервиса и презентует услуги на мировом уровне.",
+      functionality: [
+        "Премиальная презентация клиники и медицинских услуг",
+        "Современный и чистый интерфейс для пациентов",
+        "Адаптивный дизайн для всех устройств",
+        "Удобная структура контента и навигации",
+      ],
+      result:
+        "Получился сайт мирового уровня который занимается презентацией клиники и ее услуг, усиливает доверие пациентов и подчеркивает высокий уровень сервиса.",
+    },
   },
   {
-    title: "Admin Panel",
+    title: "Landing ERP",
     desc: "Стильная и удобная панель управления с навигацией, фильтрами и reusable UI.",
-    tech: ["React", "REST API", "Responsive UI"],
+    tech: ["React", "JavaScript", "Tailwind", "CSS"],
+    image: "/image/lending.png",
+    liveDemo: "https://oursystem.uz/",
+    github: "",
+    details: {
+      goal: "Создать удобную и современную систему управления внутренними процессами.",
+      functionality: [
+        "Навигация по разделам",
+        "Фильтрация и работа с данными",
+        "Переиспользуемые UI-компоненты",
+        "Адаптивная административная среда",
+      ],
+      result:
+        "Интерфейс получился чистым, понятным и удобным для ежедневной работы.",
+    },
   },
   {
     title: "E-commerce Website",
     desc: "Современный storefront с каталогом, карточками товаров и выразительной подачей.",
     tech: ["Next.js", "TypeScript", "Tailwind"],
+    image: "/image/cellmedicine.png",
+    liveDemo: "",
+    github: "",
+    details: {
+      goal: "Сделать современный интернет-магазин с выразительной визуальной подачей.",
+      functionality: [
+        "Каталог товаров",
+        "Карточки товаров",
+        "Удобная навигация",
+        "Адаптивный storefront",
+      ],
+      result:
+        "Получился современный и визуально привлекательный e-commerce интерфейс.",
+    },
   },
   {
-    title: "CRM Interface",
-    desc: "Интерфейс для работы с клиентами, задачами и внутренними процессами команды.",
-    tech: ["React", "API", "TypeScript"],
+    title: "Height-company",
+    desc: "Интерфейс для работы с сотрудниками, задачами и внутренними процессами команды.",
+    tech: ["React", "API", "TypeScript", "Tailwind", "CSS", "i18n", "Telegram Bot"],
+    image: "/image/webSayt.png",
+    liveDemo: "https://height-company.uz/",
+    github: "",
+    details: {
+      goal: "Организовать удобное пространство для работы с клиентами,проектами и задачами .",
+      functionality: [
+        "Управление клиентами",
+        "Работа с проектами и задачами",
+        "Структурирование внутренних процессов",
+        "Удобный UX для команды",
+      ],
+      result:
+        "Веб-сайт который помогает организовать внутренние процессы команды и улучшить коммуникацию с клиентами чтобы легче было принимать решения и заказы .",
+    },
   },
 ];
 
@@ -209,6 +289,465 @@ const strengths = [
   "Понятный UX",
 ];
 
+function TypewriterHero() {
+  const [l1, setL1] = useState("");
+  const [l2, setL2] = useState("");
+  const [onL1, setOnL1] = useState(true);
+  const [onL2, setOnL2] = useState(false);
+
+  useEffect(() => {
+    const F1 = "Frontend";
+    const F2 = "Developer";
+    let active = true;
+    let timer;
+
+    const wait = (ms) =>
+      new Promise((r) => {
+        timer = setTimeout(r, ms);
+      });
+
+    async function run() {
+      while (active) {
+        setOnL1(true);
+        setOnL2(false);
+
+        for (let i = 1; i <= F1.length; i++) {
+          if (!active) return;
+          setL1(F1.slice(0, i));
+          await wait(85);
+        }
+
+        await wait(150);
+        setOnL1(false);
+        setOnL2(true);
+
+        for (let i = 1; i <= F2.length; i++) {
+          if (!active) return;
+          setL2(F2.slice(0, i));
+          await wait(85);
+        }
+
+        await wait(2400);
+
+        for (let i = F2.length - 1; i >= 0; i--) {
+          if (!active) return;
+          setL2(F2.slice(0, i));
+          await wait(42);
+        }
+
+        await wait(150);
+        setOnL1(true);
+        setOnL2(false);
+
+        for (let i = F1.length - 1; i >= 0; i--) {
+          if (!active) return;
+          setL1(F1.slice(0, i));
+          await wait(42);
+        }
+
+        await wait(500);
+      }
+    }
+
+    run();
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, []);
+
+  const cur = <span className="tw-cursor" />;
+
+  return (
+    <>
+      <div className="text-right font-black leading-[1.04] text-[#f7e3bf]">
+        <div className="text-[60px] tracking-[0.05em] glav-title min-h-[1.15em]">
+          {l1}
+          {onL1 && cur}
+        </div>
+        <div className="text-[65px] tracking-[0.05em] glav-title min-h-[1.15em]">
+          {l2 || "\u00A0"}
+          {onL2 && cur}
+        </div>
+      </div>
+
+      <div className="mt-6 text-right text-[17px] glav-title tracking-[0.28em] text-[#f6e7df]/85">
+        Fast, scalable web apps. Clean code. Performance. Premium UX.
+      </div>
+
+      <div className="mt-8 space-y-4 text-right">
+        <div className="text-2xl glav-title tracking-[0.10em] sm:text-3xl">
+          Jasmin
+        </div>
+        <p className="glav-title text-[17px] tracking-[0.050em] leading-7 text-[#f6e7df]">
+          Создаю современные, быстрые и визуально сильные веб-интерфейсы
+          с акцентом на UX, чистый код и сильный личный бренд.
+        </p>
+      </div>
+    </>
+  );
+}
+
+const ABOUT_ITEMS = [
+  "• делаю адаптивную верстку",
+  "• люблю работать с креативными проектами",
+  "• создаю современные и необычные интерфейсы",
+  "• уделяю внимание UI/UX, анимациям и производительности",
+];
+
+function TypewriterList() {
+  const [lines, setLines] = useState(["", "", "", ""]);
+  const [activeIdx, setActiveIdx] = useState(0);
+
+  useEffect(() => {
+    let active = true;
+    let timer;
+
+    const wait = (ms) =>
+      new Promise((r) => {
+        timer = setTimeout(r, ms);
+      });
+
+    async function run() {
+      while (active) {
+        for (let li = 0; li < ABOUT_ITEMS.length; li++) {
+          if (!active) return;
+          setActiveIdx(li);
+          const str = ABOUT_ITEMS[li];
+
+          for (let i = 1; i <= str.length; i++) {
+            if (!active) return;
+            setLines((prev) =>
+              prev.map((v, idx) => (idx === li ? str.slice(0, i) : v))
+            );
+            await wait(38);
+          }
+
+          await wait(120);
+        }
+
+        setActiveIdx(-1);
+        await wait(2200);
+
+        for (let li = ABOUT_ITEMS.length - 1; li >= 0; li--) {
+          if (!active) return;
+          setActiveIdx(li);
+          const str = ABOUT_ITEMS[li];
+
+          for (let i = str.length - 1; i >= 0; i--) {
+            if (!active) return;
+            setLines((prev) =>
+              prev.map((v, idx) => (idx === li ? str.slice(0, i) : v))
+            );
+            await wait(18);
+          }
+
+          await wait(80);
+        }
+
+        await wait(400);
+      }
+    }
+
+    run();
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, []);
+
+  return (
+    <ul className="text-[18px] tracking-[0.08em] leading-9 text-[#f6e7df] glav-title text-center space-y-1">
+      {ABOUT_ITEMS.map((_, i) => (
+        <li key={i} className="min-h-[1.6em]">
+          {lines[i]}
+          {activeIdx === i && <span className="tw-cursor" />}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+const CATEGORIES = ["Веб-сайт", "Landing ERP", "ERP система", "Веб-сайт"];
+
+function ProjectInfoCard({ project }) {
+  const [flipped, setFlipped] = useState(false);
+
+  return (
+    <div className="relative h-full min-h-[400px] w-full [perspective:1600px]">
+      <div
+        className={`relative h-full w-full transition-transform duration-700 [transform-style:preserve-3d] ${flipped ? "[transform:rotateY(180deg)]" : ""
+          }`}>
+
+        <div className="absolute inset-0 [backface-visibility:hidden]">
+          <div className="flex h-full flex-col justify-between p-7 lg:p-10">
+            <div>
+              <h3 className="text-[28px] font-semibold glav-title tracking-[0.06em] text-[#f7e3bf] leading-snug">
+                {project.title}
+              </h3>
+
+
+              <p className="mt-3 text-[17px] glav-title leading-[1.8] tracking-[0.08em] text-[#f6e7df]">
+                {project.desc}
+              </p>
+              <div className="text-[13px] pt-2 uppercase tracking-[0.2em] text-[#f5c8ad]">
+                Технологии
+              </div>
+              <div className="mt-5 flex flex-wrap gap-2">
+                {project.tech.map((t) => (
+                  <span
+                    key={t}
+                    className="rounded-full border border-[#8f1020]/50 bg-[#8f1020]/20 px-3 py-1 text-[12px] tracking-[0.08em] text-[#f5c8ad]/80 transition hover:border-[#d36a2e]/45 hover:text-[#f5c8ad]"
+                  >
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8 flex flex-wrap items-center gap-3 ">
+              {project.liveDemo && (
+                <a href={project.liveDemo} target="_blank" rel="noopener noreferrer"
+                  className="rounded-[22px] bg-gradient-to-bl flex  gap-2  from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
+                >
+                  <svg className="mt-1.5 "
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polygon points="10,8 16,12 10,16" />
+                  </svg>
+                  Live Demo
+                </a>
+              )}
+
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noopener noreferrer"
+                  className="rounded-[22px] bg-gradient-to-bl flex  gap-2  from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
+                >
+                  <svg className="mt-1.5 "
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.92.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+                  </svg>
+                  GitHub
+                </a>
+              )}
+
+              <button
+                onClick={() => setFlipped(true)}
+                className="ml-auto rounded-[22px] bg-gradient-to-bl flex items-center gap-2 from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
+              >
+                <img src="/image/menu.png" alt="" className="w-5 h-4 object-contain" />
+                Подробнее
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute inset-0 [transform:rotateY(180deg)] [backface-visibility:hidden]">
+          <div className="flex h-full flex-col justify-between p-7 lg:p-10">
+            <div className="overflow-y-auto pr-1">
+              <h3 className="text-[24px] font-semibold glav-title tracking-[0.06em] text-[#f7e3bf]">
+                {project.title}
+              </h3>
+
+              <div className="mt-5 space-y-5">
+                <div>
+                  <div className="text-[13px] uppercase tracking-[0.2em] text-[#f5c8ad]/70">
+                    Основная цель
+                  </div>
+                  <p className="mt-2 text-[15px] leading-[1.8] tracking-[0.05em] text-[#f6e7df]/80">
+                    {project.details.goal}
+                  </p>
+                </div>
+
+                <div>
+                  <div className="flex ">
+                    <img src="/image/funk.png" alt="" className="w-12 h-12 object-contain" />
+
+                    <div className="text-[13px] uppercase tracking-[0.2em] text-[#f5c8ad]/70 mt-3">
+                      Функционал
+                    </div>    </div>
+                  <ul className="mt-2 space-y-2">
+                    {project.details.functionality.map((item) => (
+                      <li
+                        key={item}
+                        className="text-[15px] leading-[1.75] tracking-[0.05em] text-[#f6e7df]/80"
+                      >
+                        • {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* <div>
+                  <div className="text-[13px] uppercase tracking-[0.2em] text-[#f5c8ad]/70">
+                    Технологии
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {project.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="rounded-full border border-[#8f1020]/50 bg-[#8f1020]/20 px-3 py-1 text-[12px] tracking-[0.08em] text-[#f5c8ad]/80"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                </div> */}
+
+                <div>
+                  <div className="flex ">
+                    <img src="/image/result.png" alt="" className="w-12 h-12 object-contain" />
+
+                    <div className="text-[13px] uppercase tracking-[0.2em] text-[#f5c8ad]/70 mt-3">
+                      Результат
+                    </div>
+                  </div>
+
+                  <p className="mt-2 text-[15px] leading-[1.8] tracking-[0.05em] text-[#f6e7df]/80">
+                    {project.details.result}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 flex justify-end">
+              <button
+                onClick={() => setFlipped(false)}
+                className="rounded-[22px] bg-gradient-to-bl flex items-center gap-2 from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white -mt-4"
+              >
+                Назад
+                <img src="/image/close.png" alt="" className="w-[18px] h-[18px] object-contain flex-shrink-0 translate-y-[1px]" />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+ProjectInfoCard.propTypes = {
+  project: PropTypes.shape({
+    title: PropTypes.string.isRequired,
+    desc: PropTypes.string.isRequired,
+    tech: PropTypes.arrayOf(PropTypes.string).isRequired,
+    image: PropTypes.string.isRequired,
+    liveDemo: PropTypes.string,
+    github: PropTypes.string,
+    details: PropTypes.shape({
+      goal: PropTypes.string.isRequired,
+      functionality: PropTypes.arrayOf(PropTypes.string).isRequired,
+      result: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
+};
+
+function ProjectsCarousel() {
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const prev = () => setCurrent((c) => (c - 1 + projects.length) % projects.length);
+  const next = () => setCurrent((c) => (c + 1) % projects.length);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(next, 4000);
+    return () => clearInterval(id);
+  }, [paused, current]);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
+        <div className="overflow-hidden rounded-[28px] bg-[linear-gradient(160deg,rgba(80,8,16,0.97),rgba(30,4,7,0.99))]">
+          <div
+            className="flex transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+            style={{ transform: `translateX(-${current * 100}%)` }}
+          >
+            {projects.map((project, index) => (
+              <div
+                key={project.title}
+                className="w-full flex-shrink-0 lg:grid lg:grid-cols-2"
+              >
+                <div className="relative overflow-hidden h-64 lg:h-auto lg:min-h-[460px]">
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="w-full h-full object-cover"
+                  />
+
+                  <span className="absolute top-4 right-4 text-[10px] uppercase tracking-[0.28em] text-[#f5c8ad] rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-3 py-1 backdrop-blur-sm">
+                    {CATEGORIES[index]}
+                  </span>
+                </div>
+
+                <div className="min-h-[460px] bg-[linear-gradient(145deg,rgba(65,7,13,0.97),rgba(26,2,5,0.99))]">
+                  <ProjectInfoCard project={project} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <button
+        onClick={prev}
+        className="group absolute left-3 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+      >
+        <img
+          src="/image/arrow_left.png"
+          alt="prev"
+          className="w-full h-full object-contain transition-transform duration-300 group-hover:-translate-x-0.5"
+        />
+      </button>
+
+      <button
+        onClick={next}
+        className="group absolute right-3 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+      >
+        <img
+          src="/image/arrow_right.png"
+          alt="next"
+          className="w-full h-full object-contain transition-transform duration-300 group-hover:translate-x-0.5"
+        />
+      </button>
+
+      <div className="mt-5 flex items-center justify-center gap-4">
+        <span className="text-[12px] tracking-[0.2em] text-[#f6e7df]/40 glav-title">
+          {String(current + 1).padStart(2, "0")} /{" "}
+          {String(projects.length).padStart(2, "0")}
+        </span>
+
+        <div className="flex gap-2">
+          {projects.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrent(i)}
+              className={`rounded-full transition-all duration-300 ${i === current
+                ? "w-7 h-3 bg-gradient-to-r from-[#5a0d13] via-[#8f1020] to-[#d36a2e] shadow-[0_0_10px_rgba(211,106,46,0.4)]"
+                : "w-3 h-3 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] opacity-60 hover:opacity-100 hover:shadow-[0_0_8px_rgba(211,106,46,0.3)]"
+                }`}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <div className="min-h-screen bg-[#2b0608] text-[#f6e7df] selection:bg-[#d36a2e] selection:text-white">
@@ -221,118 +760,124 @@ export default function App() {
 
       <header className="sticky top-0 z-50 border-b border-white/10 bg-[#2b0608]/70 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
-          <a href="#hero" className="nik text-[19px] font-semibold uppercase tracking-[0.35em] text-[#f5c8ad]">
-            Vanessa
-          </a>
+          <div className="flex  gap-2">
+            <a
+              href="#hero"
+              className="nik flex items-center gap-2 mt-3 text-[19px] font-semibold uppercase tracking-[0.35em] text-[#f5c8ad]"
+            >
 
+              <div className="brand">
+                <img src="/image/vanessa.png" alt="" className="brandIcon object-contain" />
+              </div>
+            </a>
+          </div>
           <nav className="hidden items-center gap-7 md:flex">
             {[
-              { label: "About me", id: "about" },
-              { label: "Process", id: "process" },
-              { label: "Projects", id: "projects" },
-              { label: "Skills", id: "skills" },
+              {
+                label: "About me", id: "about",
+                icon: <img src="/image/avatar.png" alt="" className="w-5 h-5 object-contain" />
+              },
+              {
+                label: "Process", id: "process",
+                icon: <img src="/image/services.png" alt="" className="w-8 h-8object-contain" />
+              },
+              {
+                label: "Projects", id: "projects",
+                icon: <img src="/image/papka.png" alt="" className="w-8 h-8object-contain" />
+              },
+              {
+                label: "Skills", id: "skills",
+                icon: <img src="/image/skil.png" alt="" className="w-8 h-8 object-contain" />
+              },
             ].map((item) => (
               <a
                 key={item.id}
                 href={`#${item.id}`}
-                className="relative px-4 py-2 text-[17px] text-[#f5c8ad] transition duration-300 hover:text-white
-  before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2
-  before:bg-[#8f1020] before:transition-all before:duration-300
-  after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2
-  after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300
-  hover:before:w-full hover:after:w-[75%]"
+                className="relative flex items-center gap-1.5 px-4 py-2 text-[17px] text-[#f5c8ad] transition duration-300 hover:text-white
+                before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2
+                before:bg-[#8f1020] before:transition-all before:duration-300
+                after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2
+                after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300
+                hover:before:w-full hover:after:w-[75%]"
               >
+                {item.icon}
                 {item.label}
               </a>
             ))}
           </nav>
+
           <div className="flex gap-4">
-            <button
-              href="#contact"
-              className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
-            >
-              My Contacts
-            </button>
-            <button
-              href="#contact"
-              className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
-            >
+
+            <div className="rounded-[22px] flex gap-2 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white">
+              <img src="/image/kontakt.png" alt="" className="w-7 h-7  object-contain" />
+              <button >
+                My Contacts
+              </button>
+            </div>
+
+            <button className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white">
               Eng
             </button>
           </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-[1850px]  px-1  pt-4 lg:px-4">
-        <section id="hero" className="relative overflow-hidden rounded-[35px] border border-[#8f1020]/40 bg-[linear-gradient(135deg,rgba(120,10,20,0.88),rgba(71,6,14,0.95),rgba(47,7,10,0.98))] px-5 py-6 shadow-2xl shadow-black/30 lg:px-8 lg:py-8">
-          {/* <div className="absolute left-5 top-2 text-[88px] font-black leading-none tracking-[-0.012em] text-black/42 md:text-[128px]">
-            Portfolio
-          </div> */}
-
+      <main className="mx-auto max-w-[1850px] px-1 pt-4 lg:px-4">
+        <section
+          id="hero"
+          className="relative overflow-hidden rounded-[35px] border border-[#8f1020]/40 bg-[linear-gradient(135deg,rgba(120,10,20,0.88),rgba(71,6,14,0.95),rgba(47,7,10,0.98))] px-5 py-6 shadow-2xl shadow-black/30 lg:px-8 lg:py-8"
+        >
           <div className="relative z-10 grid gap-90 lg:grid-cols-2">
             <HeroVideo />
 
-            <div className="flex flex-col justify-end pt-8 lg:pt-16">
-              <div className="text-right text-[64px] font-black  leading-[1.04] text-[#f7e3bf] ">
-                <div className="text-[60px] tracking-[0.05em] glav-title">Frontend</div>
-                <div className="text-[65px] tracking-[0.05em] glav-title" >Developer</div>
-              </div>
+            <div className="flex flex-col justify-end pt-8 lg:pt-8">
+              <TypewriterHero />
 
-              <div className="mt-6 text-right text-[17px] glav-title tracking-[0.28em] text-[#f6e7df]/85">
-                Fast, scalable web apps.
-                Clean code. Performance. Premium UX.              </div>
-
-              <div className="mt-20 space-y-3 text-right">
-                <div className="text-2xl glav-title   tracking-[0.10em] sm:text-3xl">
-                  Jasmin
-                </div>
-
-                <p className="ml-auto glav-title max-w-sm text-[17px] tracking-[0.050em] leading-7 text-[#f6e7df]">
-                  Создаю современные, быстрые и визуально сильные веб-интерфейсы
-                  с акцентом на UX, чистый код и сильный личный бренд.
-                </p>
-              </div>
-
-              <div className="mt-7 flex flex-wrap justify-end gap-3">
-                <a href="#projects" className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
-                >
+              <div className="mt-3 flex flex-wrap justify-end gap-3">
+                <a href="#projects" className="rounded-[22px] flex items-center gap-2 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:text-white">
                   View Projects
+                  <img src="/image/papka.png" alt="" className="w-8 h-8 object-contain flex-shrink-0" />
                 </a>
-                <a href="#contact" className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
-                >
+                <a href="#contact" className="rounded-[22px] flex items-center gap-2 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:text-white">
                   My Contacts
+                  <img src="/image/kontakt.png" alt="" className="w-6 h-6 object-contain flex-shrink-0" />
                 </a>
-                <a href="#" className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
-                >
+                <a href="#cv" className="rounded-[22px] flex items-center gap-2 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:text-white">
                   Download CV
+                  <img src="/image/skacat.png" alt="" className="w-6 h-6 object-contain flex-shrink-0" />
                 </a>
               </div>
             </div>
           </div>
         </section>
 
-        <section id="about" className="  grid gap-5 lg:grid-cols-1">
+        <section id="about" className="grid gap-5 lg:grid-cols-1">
           <div className="rounded-[28px] mt-22 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
-            <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(91,9,16,0.9),rgba(58,6,10,0.95))] p-5 ">
+            <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(91,9,16,0.9),rgba(58,6,10,0.95))] p-5">
               <div>
                 <div className="rounded-[22px] py-2 px-3">
                   <div className="glav-title font-bold text-[35px] tracking-[0.2em] glav-title">
-                    <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">About Me</span>
+                    <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+                      About Me
+                    </span>
                   </div>
-                  <div className="flex items-start justify-between gap-8 mt-4">
-                    <p className="text-[18px] max-w-[760px] tracking-[0.08em] leading-8 text-[#f6e7df] glav-title">
-                      Я Frontend Developer. Люблю сильный UI/UX, фастастический дизайн и
-                      современные digital-продукты. Создаю адаптивные интерфейсы,
-                      которые выглядят премиально, работаю усердно   и оставляю
-                      ощущение эксклюзивности в своих созданных сайтах.
-                    </p>
 
-                    <ul className=" text-[18px] tracking-[0.08em] leading-8 text-[#f6e7df] glav-title text-center">
-                      <li>• делаю адаптивную верстку</li>
-                      <li>• люблю работать с креативными проектами</li>
-                      <li>• создаю современные и необычные интерфейсы</li>
-                      <li className="w-[600px]">• уделяю внимание UI/UX, анимациям и производительности</li>
-                    </ul>
+                  <div className="flex items-start justify-between gap-8 mt-4">
+                    <SplitScroll
+                      mode="lines"
+                      duration={0.85}
+                      stagger={0.1}
+                      start="top 85%"
+                    >
+                      <p className="text-[18px] max-w-[760px] tracking-[0.08em] leading-8 text-[#f6e7df] glav-title">
+                        Я Frontend Developer. Люблю сильный UI/UX, фастастический
+                        дизайн и современные digital-продукты. Создаю адаптивные
+                        интерфейсы, которые выглядят премиально, работаю усердно и
+                        оставляю ощущение эксклюзивности в своих созданных сайтах.
+                      </p>
+                    </SplitScroll>
+
+                    <TypewriterList />
                   </div>
                 </div>
               </div>
@@ -340,16 +885,22 @@ export default function App() {
           </div>
 
           <div className="rounded-[28px] mt-22 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
-            <div id="process" className="rounded-[28px] bg-[linear-gradient(135deg,rgba(81,8,14,0.92),rgba(49,5,9,0.96))] p-6">
-              {/* header */}
+            <div
+              id="process"
+              className="rounded-[28px] bg-[linear-gradient(135deg,rgba(81,8,14,0.92),rgba(49,5,9,0.96))] p-6"
+            >
               <div className="mb-6">
                 <div className="mb-1 text-[29px] font-semibold tracking-[0.3em] glav-title">
-                  <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">Этапы работы</span>
+                  <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+                    <img src="/image/edit.png" alt="" className="inline w-18 h-18 object-contain align-middle" />Этапы работы
+
+                  </span>
                 </div>
-                <p className="text-[16px] glav-title text-[#f6e7df] tracking-[0.15em] ">6 шагов · от идеи до запуска</p>
+                <p className="text-[16px] glav-title text-[#f6e7df] tracking-[0.15em]">
+                  6 шагов · от идеи до запуска
+                </p>
               </div>
 
-              {/* grid */}
               <div className="grid gap-3 sm:grid-cols-2">
                 {process.map((item, i) => (
                   <div
@@ -358,26 +909,25 @@ export default function App() {
                     style={{ animationDelay: `${i * 0.09}s` }}
                   >
                     <div className="relative h-full overflow-hidden rounded-[20px] bg-[linear-gradient(145deg,rgba(65,7,13,0.97),rgba(26,2,5,0.99))] p-5 transition-colors duration-500 group-hover:bg-[linear-gradient(145deg,rgba(82,9,17,0.97),rgba(38,3,7,0.99))]">
-                      {/* shimmer sweep */}
                       <div className="shimmer" />
 
-
-
                       <div className="relative">
-                        {/* badge + line */}
                         <div className="mb-3 flex items-center gap-3">
-                          <span className="flex h-[22px] min-w-[36px] items-center justify-center rounded-full border border-[#8f1020]/55 bg-[#8f1020]/20 px-2 text-[10.5px] font-bold tracking-wider text-[#d36a2e] transition-all duration-300 group-hover:border-[#d36a2e]/55 group-hover:bg-[#d36a2e]/12 group-hover:text-[#e8824a]">
-                            {item.id}
-                          </span>
+                          {item.id === "01"
+                            ? <img src="/image/bir.png" alt="01" className="w-10 h-10 object-contain flex-shrink-0" />
+                            : item.id === "02"
+                            ? <img src="/image/ikki.png" alt="02" className="w-10 h-10 object-contain flex-shrink-0" />
+                            : <span className="flex h-[22px] min-w-[36px] items-center justify-center rounded-full border border-[#8f1020]/55 bg-[#8f1020]/20 px-2 text-[10.5px] font-bold tracking-wider text-[#d36a2e] transition-all duration-300 group-hover:border-[#d36a2e]/55 group-hover:bg-[#d36a2e]/12 group-hover:text-[#e8824a]">
+                              {item.id}
+                            </span>
+                          }
                           <div className="h-px flex-1 bg-gradient-to-r from-[#8f1020]/50 to-transparent transition-colors duration-400 group-hover:from-[#d36a2e]/40" />
                         </div>
 
-                        {/* title */}
                         <div className="text-[23px] text-center glav-title tracking-[0.05em] glav-title text-[#f6e7df] transition-colors duration-300 group-hover:text-white">
                           {item.title}
                         </div>
 
-                        {/* desc */}
                         <p className="mt-2 text-[18px] glav-title text-center leading-[1.72] glav-title text-[#f6e7df]/80 transition-colors duration-500 group-hover:text-[#f6e7df]/78">
                           {item.text}
                         </p>
@@ -388,79 +938,42 @@ export default function App() {
               </div>
             </div>
           </div>
-        </section >
-        <div className="text-[44px] text-center font-semibold glav-title my-22 text-[#f6e7df]">Projects</div>
-        <section id="projects" className="mt-5 grid gap-5 lg:grid-cols-2">
-          {projects.map((project, index) => (
-            <div key={project.title} className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
-              <article
-                className="rounded-[28px] bg-[linear-gradient(135deg,rgba(96,10,18,0.92),rgba(42,5,8,0.98))] p-4"
-              >
-                <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                  <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
-                    {index === 0 ? "Референсинг сайта" : project.title}
-                  </span>
-                </div>
+        </section>
 
-                <div className="grid gap-4 md:grid-cols-2">
-                  <div className="rounded-[22px] border border-[#8f1020]/40 bg-[#18090c] p-3">
-                    <div className="rounded-[18px] border border-[#8f1020]/40 bg-[linear-gradient(180deg,#2c0f14,#0f090b)] p-3">
-                      <div className="mb-3 h-4 w-24 rounded-full bg-[#d36a2e]/25" />
-                      <div className="grid gap-2">
-                        <div className="h-16 rounded-2xl bg-white/5" />
-                        <div className="h-10 rounded-xl bg-white/5" />
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="h-16 rounded-2xl bg-white/5" />
-                          <div className="h-16 rounded-2xl bg-[linear-gradient(135deg,rgba(211,106,46,0.22),rgba(255,255,255,0.04))]" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+        <SplitScroll
+          mode="chars"
+          duration={0.7}
+          stagger={0.05}
+          start="top 88%"
+          className="text-[44px] text-center font-bold glav-title my-22 text-[#f6e7df]"
+        >
+          Projects
+        </SplitScroll>
 
-                  <div className="rounded-[22px] border border-[#8f1020]/40 bg-white/5 p-4">
-                    <div className="text-xl font-semibold glav-title tracking-[0.1em]">
-                      <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">{project.title}</span>
-                    </div>
-                    <p className="mt-3 text-[17px] leading-7 text-[#f6e7df]/78">{project.desc}</p>
-
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {project.tech.map((item) => (
-                        <span
-                          key={item}
-                          className="rounded-full border border-[#d36a2e]/20 bg-[#d36a2e]/10 px-3 py-1 text-xs text-[#f5c8ad]"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="mt-5 flex flex-wrap gap-3">
-                      <a href="#" className="rounded-full bg-[#f4e6d6] px-4 py-2 text-sm font-medium text-[#4d0910] transition hover:bg-white">
-                        Live Demo
-                      </a>
-                      <a href="#" className="rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm font-medium text-white transition hover:bg-white/10">
-                        GitHub
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </div>
-          ))}
+        <section id="projects" className="mt-5">
+          <ProjectsCarousel />
         </section>
 
         <section className="mt-5 grid gap-5 lg:grid-cols-[0.58fr_0.42fr]">
           <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
             <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(90,9,16,0.92),rgba(44,6,10,0.98))] p-5">
               <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">Другие работы</span>
+                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+                  Другие работы
+                </span>
               </div>
+
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {otherWorks.map((item, i) => (
-                  <div key={item} className="rounded-[20px] border border-[#8f1020]/40 bg-white/5 p-3">
+                  <div
+                    key={item}
+                    className="rounded-[20px] border border-[#8f1020]/40 bg-white/5 p-3"
+                  >
                     <div className="mb-3 h-24 rounded-[18px] bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(211,106,46,0.12))]" />
                     <div className="text-sm font-medium">{item}</div>
-                    <div className="mt-1 text-xs text-[#f6e7df]/55">project #{i + 1}</div>
+                    <div className="mt-1 text-xs text-[#f6e7df]/55">
+                      project #{i + 1}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -468,23 +981,32 @@ export default function App() {
           </div>
 
           <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
-            <div id="skills" className="rounded-[28px] bg-[linear-gradient(135deg,rgba(72,8,13,0.94),rgba(35,5,8,0.98))] p-5">
+            <div
+              id="skills"
+              className="rounded-[28px] bg-[linear-gradient(135deg,rgba(72,8,13,0.94),rgba(35,5,8,0.98))] p-5"
+            >
               <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">Skills</span>
+                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+                  Skills
+                </span>
               </div>
+
               <div className="grid grid-cols-2 gap-3">
                 {skills.map((skill) => (
                   <div
                     key={skill}
-                    className="rounded-[18px] border border-[#8f1020]/40 bg-white/5 px-3 py-3 text-sm text-[#f6e7df]/86"
+                    className="flex items-center gap-2.5 rounded-[18px] border border-[#8f1020]/40 bg-white/5 px-3 py-3 text-sm text-[#f6e7df]/80 transition-all duration-300 hover:border-[#d36a2e]/45 hover:bg-[#d36a2e]/8 hover:text-[#f5c8ad] cursor-default"
                   >
+                    <span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-[#8f1020] transition-colors duration-300 group-hover:bg-[#d36a2e]" />
                     {skill}
                   </div>
                 ))}
               </div>
 
               <div className="mt-5 rounded-[20px] border border-[#d36a2e]/18 bg-[#d36a2e]/8 p-4">
-                <div className="text-sm uppercase tracking-[0.24em] text-[#f5c8ad]">Core Stack</div>
+                <div className="text-sm uppercase tracking-[0.24em] text-[#f5c8ad]">
+                  Core Stack
+                </div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {stack.map((item) => (
                     <span
@@ -504,17 +1026,43 @@ export default function App() {
           <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
             <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(84,9,15,0.94),rgba(37,5,8,0.98))] p-5">
               <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">Why Hire Me</span>
+                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+                  Why Hire Me
+                </span>
               </div>
-              <p className="max-w-2xl text-sm leading-7 text-[#f6e7df]/80">
-                Это портфолио не просто про красивую подачу. Оно показывает, что я
-                умею собирать современные интерфейсы, чувствую визуальный стиль и
-                могу превращать идею в сильный frontend-продукт.
-              </p>
+
+              <SplitScroll
+                mode="lines"
+                duration={0.8}
+                stagger={0.1}
+                start="top 85%"
+              >
+                <p className="max-w-2xl text-sm leading-7 text-[#f6e7df]/80">
+                  Это портфолио не просто про красивую подачу. Оно показывает, что я
+                  умею собирать современные интерфейсы, чувствую визуальный стиль и
+                  могу превращать идею в сильный frontend-продукт.
+                </p>
+              </SplitScroll>
 
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {strengths.map((item) => (
-                  <div key={item} className="rounded-[18px] border border-[#8f1020]/40 bg-white/5 p-4 text-sm">
+                  <div
+                    key={item}
+                    className="flex items-center gap-2.5 rounded-[18px] border border-[#8f1020]/40 bg-white/5 p-4 text-sm transition-all duration-300 hover:border-[#d36a2e]/45 hover:bg-[#d36a2e]/8 hover:text-[#f5c8ad] cursor-default"
+                  >
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#d36a2e"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="flex-shrink-0 opacity-70"
+                    >
+                      <polyline points="20,6 9,17 4,12" />
+                    </svg>
                     {item}
                   </div>
                 ))}
@@ -523,29 +1071,93 @@ export default function App() {
           </div>
 
           <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
-            <div id="contact" className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,rgba(122,14,24,0.86),rgba(69,8,13,0.94),rgba(40,6,9,0.98))] p-5">
+            <div
+              id="contact"
+              className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,rgba(122,14,24,0.86),rgba(69,8,13,0.94),rgba(40,6,9,0.98))] p-5"
+            >
               <div className="text-[44px] font-black leading-none tracking-[-0.05em] sm:text-[58px]">
-                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">Сотрудничество</span>
+                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+                  Сотрудничество
+                </span>
               </div>
 
               <div className="mt-5 grid gap-5 md:grid-cols-[0.54fr_0.46fr]">
                 <div>
                   <div className="rounded-[20px] border border-[#8f1020]/40 bg-white/8 p-4 text-sm leading-7 text-[#f6e7df]/82">
-                    Ищу интересные проекты, сильную команду и возможность создавать
-                    современные digital-продукты с выразительным визуалом и качественной frontend-реализацией.
+                    <SplitScroll
+                      mode="lines"
+                      duration={0.8}
+                      stagger={0.1}
+                      start="top 85%"
+                    >
+                      Ищу интересные проекты, сильную команду и возможность создавать
+                      современные digital-продукты с выразительным визуалом и
+                      качественной frontend-реализацией.
+                    </SplitScroll>
                   </div>
 
-                  <div className="mt-5 grid grid-cols-2 gap-3">
-                    {["Telegram", "GitHub", "LinkedIn", "Email"].map((item) => (
+                  <div className="mt-5 flex flex-col gap-2.5">
+                    {[
+                      {
+                        name: "Telegram",
+                        sub: "@username",
+                        href: "#",
+                        icon: (
+                          <img src="/image/tg.png" alt="" className="w-15 h-15 object-contain" />
+                        ),
+                        color: "from-[#8f1020]/20 to-transparent",
+                        border: "border-[#8f1020]/30 hover:border-[#d36a2e]/60",
+                        iconColor: "text-[#f5c8ad]",
+                      },
+                      {
+                        name: "GitHub",
+                        sub: "github.com/username",
+                        href: "#",
+                        icon: (
+                          <img src="/image/github.png" alt="" className="w-10 h-10 object-contain" />
+                        ),
+                        color: "from-[#5a0d13]/20 to-transparent",
+                        border: "border-[#8f1020]/30 hover:border-[#d36a2e]/60",
+                        iconColor: "text-[#f5c8ad]",
+                      },
+                      {
+                        name: "LinkedIn",
+                        sub: "linkedin.com/in/username",
+                        href: "#",
+                        icon: (
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                          </svg>
+                        ),
+                        color: "from-[#8f1020]/20 to-transparent",
+                        border: "border-[#8f1020]/30 hover:border-[#d36a2e]/60",
+                        iconColor: "text-[#f5c8ad]",
+                      },
+                      {
+                        name: "Email",
+                        sub: "hello@email.com",
+                        href: "#",
+                        icon: (
+                          <img src="/image/email.png" alt="" className="w-5 h-5 object-contain" />
+                        ),
+                        color: "from-[#d36a2e]/15 to-transparent",
+                        border: "border-[#8f1020]/30 hover:border-[#d36a2e]/60",
+                        iconColor: "text-[#d36a2e]",
+                      },
+                    ].map(({ name, sub, href, icon, color, border, iconColor }) => (
                       <a
-                        key={item}
-                        href="#"
-                        className="relative flex min-h-[96px] items-center justify-center rounded-[20px] border border-[#8f1020]/40 bg-white/6 text-sm font-medium transition hover:bg-white/10
-  before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300
-  after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300
-  hover:before:w-[60%] hover:after:w-[45%]"
+                        key={name}
+                        href={href}
+                        className={`group flex items-center gap-4 rounded-[18px] border ${border} bg-gradient-to-r ${color} bg-[#140203] px-4 py-3.5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_4px_20px_rgba(143,16,32,0.3)]`}
                       >
-                        {item}
+                        <div className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-[12px] ${iconColor} transition-transform duration-300 group-hover:scale-110`}>
+                          {icon}
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[14px] font-semibold text-[#f5c8ad] tracking-wide">{name}</span>
+                          <span className="text-[11px] text-[#f6e7df]/40 truncate">{sub}</span>
+                        </div>
+                        <svg className="ml-auto flex-shrink-0 text-[#f6e7df]/25 group-hover:text-[#f5c8ad]/60 transition-colors duration-300" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18l6-6-6-6" /></svg>
                       </a>
                     ))}
                   </div>
@@ -553,26 +1165,32 @@ export default function App() {
 
                 <div className="flex flex-col items-center justify-center">
                   <div className="h-56 w-56 rounded-full border border-[#8f1020]/40 overflow-hidden">
-                    <img src="/image/portfolio.png" alt="Jasmin" className="h-full w-full object-cover object-top" />
+                    <img
+                      src="/image/portfolio.png"
+                      alt="Jasmin"
+                      className="h-full w-full object-cover object-top"
+                    />
                   </div>
-                  <div className="mt-3 text-sm uppercase tracking-[0.28em] text-[#f6e7df]/72">Jasmin</div>
+                  <div className="mt-3 text-sm uppercase tracking-[0.28em] text-[#f6e7df]/72">
+                    Jasmin
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
-      </main >
+      </main>
 
       <footer className="mx-auto mt-4 max-w-7xl border-t border-white/10 px-4 py-6 text-sm text-[#f6e7df]/55 lg:px-8">
         <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
           <div>
-            <span className="font-semibold text-white">MARINA</span> — Frontend Developer
+            <span className="font-semibold text-white">JASMIN</span> — Frontend
+            Developer
           </div>
           <div>Premium feminine developer portfolio</div>
           <div>© 2026 All rights reserved.</div>
         </div>
       </footer>
-    </div >
+    </div>
   );
-}
-
+} 

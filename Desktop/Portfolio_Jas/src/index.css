@@ -1,4 +1,44 @@
 @import "tailwindcss";
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 72px;
+  overflow: visible;
+}
+
+.brandIcon {
+  width: 156px;
+  height: 156px;
+  flex-shrink: 0;
+}
+
+.brandText {
+  display: inline-block;
+  font-size: 42px;        /* базовый размер */
+  line-height: 0.8;       /* уменьшает высоту по Y */
+  white-space: nowrap;
+  transform: scale(1.18); /* визуально увеличивает */
+  transform-origin: left center;
+}
+/* ── Custom scrollbar ── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #1a0305;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, #8f1020, #d36a2e);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(to bottom, #b01428, #e07a3a);
+}
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8f1020 #1a0305;
+}
 .nik{
   font-family: 'Alegreya SC', serif;
 }
@@ -62,4 +102,38 @@ video {
 
 .process-num {
   animation: pulseNum 3s ease-in-out infinite;
+}
+
+/* ── Typewriter cursor ── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+.tw-cursor {
+  display: inline-block;
+  width: 4px;
+  height: 0.82em;
+  background: #d36a2e;
+  margin-left: 6px;
+  vertical-align: middle;
+  border-radius: 2px;
+  animation: blink 0.85s step-end infinite;
+}
+
+/* ── Project cards ── */
+#projects > div {
+  opacity: 0;
+  animation: fadeInUp 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+#projects > div:nth-child(1) { animation-delay: 0.05s; }
+#projects > div:nth-child(2) { animation-delay: 0.15s; }
+#projects > div:nth-child(3) { animation-delay: 0.25s; }
+#projects > div:nth-child(4) { animation-delay: 0.35s; }
+
+/* ── Skill / Strength items ── */
+.skill-dot {
+  transition: background-color 0.3s ease;
+}
+div:hover > .skill-dot {
+  background-color: #d36a2e;
 }
