@@ -12,7 +12,12 @@
   height: 156px;
   flex-shrink: 0;
 }
+.icon{
+  width: 80px;
+  height: 84px;
+    flex-shrink: 0;
 
+}
 .brandText {
   display: inline-block;
   font-size: 42px;        /* базовый размер */

@@ -377,7 +377,7 @@ function TypewriterHero() {
 
       <div className="mt-8 space-y-4 text-right">
         <div className="text-2xl glav-title tracking-[0.10em] sm:text-3xl">
-          Jasmin
+          Kuralova Jasmin
         </div>
         <p className="glav-title text-[17px] tracking-[0.050em] leading-7 text-[#f6e7df]">
           Создаю современные, быстрые и визуально сильные веб-интерфейсы
@@ -543,7 +543,7 @@ function ProjectInfoCard({ project }) {
 
               <button
                 onClick={() => setFlipped(true)}
-                className="ml-auto rounded-[22px] bg-gradient-to-bl flex items-center gap-2 from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
+                className="ml-auto rounded-[22px] bg-gradient-to-bl flex cursor-pointer items-center gap-2 from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"
               >
                 <img src="/image/menu.png" alt="" className="w-5 h-4 object-contain" />
                 Подробнее
@@ -560,9 +560,11 @@ function ProjectInfoCard({ project }) {
               </h3>
 
               <div className="mt-5 space-y-5">
-                <div>
-                  <div className="text-[13px] uppercase tracking-[0.2em] text-[#f5c8ad]/70">
-                    Основная цель
+                <div className="">
+                  <div className="flex  ">  <img src="/image/raketa.png" alt="" className="inline w-14 h-14  align-middle object-contain" />
+                    <div className="text-[13px] uppercase tracking-[0.2em] text-[#f5c8ad]/70 mt-4">
+                      Основная цель
+                    </div>
                   </div>
                   <p className="mt-2 text-[15px] leading-[1.8] tracking-[0.05em] text-[#f6e7df]/80">
                     {project.details.goal}
@@ -623,7 +625,7 @@ function ProjectInfoCard({ project }) {
             <div className="mt-8 flex justify-end">
               <button
                 onClick={() => setFlipped(false)}
-                className="rounded-[22px] bg-gradient-to-bl flex items-center gap-2 from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white -mt-4"
+                className="rounded-[22px] bg-gradient-to-bl flex cursor-pointer items-center gap-2 from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white -mt-4"
               >
                 Назад
                 <img src="/image/close.png" alt="" className="w-[18px] h-[18px] object-contain flex-shrink-0 translate-y-[1px]" />
@@ -705,7 +707,7 @@ function ProjectsCarousel() {
 
       <button
         onClick={prev}
-        className="group absolute left-3 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+        className="group cursor-pointer absolute left-3 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
       >
         <img
           src="/image/arrow_left.png"
@@ -716,7 +718,7 @@ function ProjectsCarousel() {
 
       <button
         onClick={next}
-        className="group absolute right-3 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
+        className="group  cursor-pointer absolute right-3 top-1/2 -translate-y-1/2 z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110"
       >
         <img
           src="/image/arrow_right.png"
@@ -774,12 +776,9 @@ export default function App() {
           <nav className="hidden items-center gap-7 md:flex">
             {[
               {
+
                 label: "About me", id: "about",
-                icon: <img src="/image/avatar.png" alt="" className="w-5 h-5 object-contain" />
-              },
-              {
-                label: "Process", id: "process",
-                icon: <img src="/image/services.png" alt="" className="w-8 h-8object-contain" />
+                icon: <img src="/image/about.png" alt="" className="w-12 h-12 object-contain" />
               },
               {
                 label: "Projects", id: "projects",
@@ -788,6 +787,10 @@ export default function App() {
               {
                 label: "Skills", id: "skills",
                 icon: <img src="/image/skil.png" alt="" className="w-8 h-8 object-contain" />
+              },
+              {
+                label: "Contacts", id: "contacts",
+                icon: <img src="/image/kontakt.png" alt="" className="w-8 h-8 object-contain" />
               },
             ].map((item) => (
               <a
@@ -802,21 +805,19 @@ export default function App() {
               >
                 {item.icon}
                 {item.label}
+
               </a>
             ))}
           </nav>
 
           <div className="flex gap-4">
 
-            <div className="rounded-[22px] flex gap-2 bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white">
-              <img src="/image/kontakt.png" alt="" className="w-7 h-7  object-contain" />
-              <button >
-                My Contacts
-              </button>
-            </div>
 
-            <button className="rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white">
-              Eng
+            {/* <div className="flex rounded-[22px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[2px] shadow-[inset_1px_1px_0_rgba(255,255,255,0.08)] border border-white/5 px-4 py-2 text-[17px] text-[#f5c8ad] transition hover:border-[#d36a2e] hover:bg-[#d36a2e]/10 hover:text-white"> */}
+            <button className="cursor-pointer flex items-center gap-2">
+              <img src="/image/perevod.png" alt="" className="icon  object-contain" />
+              <h1 className="text-[17px] ml-4 text-[#f5c8ad]"> Eng</h1>
+
             </button>
           </div>
         </div>
@@ -857,6 +858,7 @@ export default function App() {
               <div>
                 <div className="rounded-[22px] py-2 px-3">
                   <div className="glav-title font-bold text-[35px] tracking-[0.2em] glav-title">
+                    <img src="/image/zvez.png" alt="" className="inline w-18 h-18 -mt-2 object-contain align-middle" />
                     <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
                       About Me
                     </span>
@@ -897,7 +899,7 @@ export default function App() {
                   </span>
                 </div>
                 <p className="text-[16px] glav-title text-[#f6e7df] tracking-[0.15em]">
-                  6 шагов · от идеи до запуска
+                  <img src="/image/olti.png" alt="6" className="inline w-7 h-7 object-contain align-middle mr-1" />шагов · от идеи до запуска
                 </p>
               </div>
 
@@ -914,12 +916,20 @@ export default function App() {
                       <div className="relative">
                         <div className="mb-3 flex items-center gap-3">
                           {item.id === "01"
-                            ? <img src="/image/bir.png" alt="01" className="w-10 h-10 object-contain flex-shrink-0" />
+                            ? <img src="/image/bir.png" alt="01" className="w-12 h-12 object-contain flex-shrink-0" />
                             : item.id === "02"
-                            ? <img src="/image/ikki.png" alt="02" className="w-10 h-10 object-contain flex-shrink-0" />
-                            : <span className="flex h-[22px] min-w-[36px] items-center justify-center rounded-full border border-[#8f1020]/55 bg-[#8f1020]/20 px-2 text-[10.5px] font-bold tracking-wider text-[#d36a2e] transition-all duration-300 group-hover:border-[#d36a2e]/55 group-hover:bg-[#d36a2e]/12 group-hover:text-[#e8824a]">
-                              {item.id}
-                            </span>
+                              ? <img src="/image/ikki.png" alt="02" className="w-14 h-14 object-contain flex-shrink-0" />
+                              : item.id === "03"
+                                ? <img src="/image/uch.png" alt="03" className="w-14 h-14 object-contain flex-shrink-0" />
+                                : item.id === "04"
+                                  ? <img src="/image/tort.png" alt="04" className="w-14 h-14 object-contain flex-shrink-0" />
+                                  : item.id === "05"
+                                    ? <img src="/image/besh.png" alt="05" className="w-14 h-14 object-contain flex-shrink-0" />
+                                    : item.id === "06"
+                                      ? <img src="/image/olti.png" alt="06" className="w-14 h-14 object-contain flex-shrink-0" />
+                                      : <span className="flex h-[22px] min-w-[36px] items-center justify-center rounded-full border border-[#8f1020]/55 bg-[#8f1020]/20 px-2 text-[10.5px] font-bold tracking-wider text-[#d36a2e] transition-all duration-300 group-hover:border-[#d36a2e]/55 group-hover:bg-[#d36a2e]/12 group-hover:text-[#e8824a]">
+                                        {item.id}
+                                      </span>
                           }
                           <div className="h-px flex-1 bg-gradient-to-r from-[#8f1020]/50 to-transparent transition-colors duration-400 group-hover:from-[#d36a2e]/40" />
                         </div>
@@ -939,16 +949,18 @@ export default function App() {
             </div>
           </div>
         </section>
+        <div className="flex items-center justify-center gap-1 my-18">    <img src="/image/papka.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" />
+          <SplitScroll
+            mode="chars"
+            duration={0.7}
+            stagger={0.05}
+            start="top 88%"
+            className="text-[44px] text-center font-bold glav-title text-[#f6e7df]"
+          >
+            Projects
+          </SplitScroll>
 
-        <SplitScroll
-          mode="chars"
-          duration={0.7}
-          stagger={0.05}
-          start="top 88%"
-          className="text-[44px] text-center font-bold glav-title my-22 text-[#f6e7df]"
-        >
-          Projects
-        </SplitScroll>
+        </div>
 
         <section id="projects" className="mt-5">
           <ProjectsCarousel />
@@ -958,9 +970,13 @@ export default function App() {
           <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
             <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(90,9,16,0.92),rgba(44,6,10,0.98))] p-5">
               <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
-                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
-                  Другие работы
-                </span>
+
+
+                <div className="relative flex  before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+
+                  <img src="/image/project.png" alt="" className="w-20 h-20 object-contain flex-shrink-0" /><span className="mt-4">Другие работы</span>
+                </div>
+
               </div>
 
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -986,8 +1002,10 @@ export default function App() {
               className="rounded-[28px] bg-[linear-gradient(135deg,rgba(72,8,13,0.94),rgba(35,5,8,0.98))] p-5"
             >
               <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
+                <img src="/image/zvezda.png" alt="" className="inline object-contain flex-shrink-0 w-22 h-22  -mr-2" />
                 <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
                   Skills
+
                 </span>
               </div>
 
@@ -1026,6 +1044,7 @@ export default function App() {
           <div className="rounded-[28px] bg-gradient-to-bl from-[#5a0d13] via-[#8f1020] to-[#2b0608] p-[1px]">
             <div className="rounded-[28px] bg-[linear-gradient(135deg,rgba(84,9,15,0.94),rgba(37,5,8,0.98))] p-5">
               <div className="mb-4 text-3xl font-black tracking-[-0.05em]">
+                <img src="/image/why.png" alt="" className="inline object-contain flex-shrink-0 w-25 h-25 " />
                 <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
                   Why Hire Me
                 </span>
@@ -1037,7 +1056,7 @@ export default function App() {
                 stagger={0.1}
                 start="top 85%"
               >
-                <p className="max-w-2xl text-sm leading-7 text-[#f6e7df]/80">
+                <p className="max-w-2xl text-[17px] leading-7 text-[#f6e7df]/80">
                   Это портфолио не просто про красивую подачу. Оно показывает, что я
                   умею собирать современные интерфейсы, чувствую визуальный стиль и
                   могу превращать идею в сильный frontend-продукт.
@@ -1048,7 +1067,7 @@ export default function App() {
                 {strengths.map((item) => (
                   <div
                     key={item}
-                    className="flex items-center gap-2.5 rounded-[18px] border border-[#8f1020]/40 bg-white/5 p-4 text-sm transition-all duration-300 hover:border-[#d36a2e]/45 hover:bg-[#d36a2e]/8 hover:text-[#f5c8ad] cursor-default"
+                    className="flex items-center gap-2.5 rounded-[18px] border border-[#8f1020]/40 bg-white/5 p-4 text-[16px] transition-all duration-300 hover:border-[#d36a2e]/45 hover:bg-[#d36a2e]/8 hover:text-[#f5c8ad] cursor-default"
                   >
                     <svg
                       width="14"
@@ -1075,15 +1094,17 @@ export default function App() {
               id="contact"
               className="overflow-hidden rounded-[28px] bg-[linear-gradient(135deg,rgba(122,14,24,0.86),rgba(69,8,13,0.94),rgba(40,6,9,0.98))] p-5"
             >
-              <div className="text-[44px] font-black leading-none tracking-[-0.05em] sm:text-[58px]">
-                <span className="relative inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
+              <div className="text-[30px] flex font-black leading-none tracking-[-0.05em] sm:text-[42px]">
+                <img src="/image/sotr.png" alt="" className="inline object-contain flex-shrink-0 w-28 h-28 " />
+
+                <span className="relative mt-8 inline-block before:absolute before:left-1/2 before:bottom-0.5 before:h-[0.5px] before:w-0 before:-translate-x-1/2 before:bg-[#8f1020] before:transition-all before:duration-300 after:absolute after:left-1/2 after:bottom-0 after:h-[0.5px] after:w-0 after:-translate-x-1/2 after:rounded-full after:bg-[#d36a2e] after:transition-all after:duration-300 hover:before:w-full hover:after:w-[75%]">
                   Сотрудничество
                 </span>
               </div>
 
               <div className="mt-5 grid gap-5 md:grid-cols-[0.54fr_0.46fr]">
                 <div>
-                  <div className="rounded-[20px] border border-[#8f1020]/40 bg-white/8 p-4 text-sm leading-7 text-[#f6e7df]/82">
+                  <div className="rounded-[20px] text-start border border-[#8f1020]/40 bg-white/8 p-4 text-[16px] leading-7 text-[#f6e7df]/82">
                     <SplitScroll
                       mode="lines"
                       duration={0.8}
@@ -1164,16 +1185,19 @@ export default function App() {
                 </div>
 
                 <div className="flex flex-col items-center justify-center">
-                  <div className="h-56 w-56 rounded-full border border-[#8f1020]/40 overflow-hidden">
+                  <div className=" text-md uppercase tracking-[0.28em] text-[#f6e7df]/72">
+                    <img src="/image/vanessa2.png" alt="" className="inline w-62 h-30 " />
+                  </div>
+                  <div className="h-106 w-56 overflow-hidden">
                     <img
                       src="/image/portfolio.png"
                       alt="Jasmin"
                       className="h-full w-full object-cover object-top"
                     />
                   </div>
-                  <div className="mt-3 text-sm uppercase tracking-[0.28em] text-[#f6e7df]/72">
-                    Jasmin
-                  </div>
+                  {/* <div className=" text-md uppercase tracking-[0.28em] text-[#f6e7df]/72">
+                    <img src="/image/vanessa2.png" alt="" className="inline w-60 h-28 " />
+                  </div> */}
                 </div>
               </div>
             </div>
